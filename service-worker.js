@@ -1,8 +1,11 @@
-const CACHE_NAME = "plataforma-pwa-v39-acceso-codigo-20260815";
+const CACHE_NAME = "plataforma-pwa-v40-panel-docente-20260815";
 
 const APP_SHELL = [
     "./",
     "./index.html",
+    "./docente.html",
+    "./docente.css",
+    "./docente.js",
     "./style.css",
     "./app.js",
     "./supabase-config.js",

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Panel docente · FARMACOLOGIA</title>
+    <link rel="icon" href="plataforma-icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="docente.css?v=20260815-panel-1">
+</head>
+<body>
+    <header class="teacherHeader">
+        <a href="./" class="brand" aria-label="Volver a FARMACOLOGIA">
+            <img src="plataforma-icon.svg" alt="">
+            <span><strong>FARMACOLOGIA</strong><small>Panel docente</small></span>
+        </a>
+        <button id="btnCerrarSesion" class="secondaryButton" type="button" hidden>Cerrar sesión</button>
+    </header>
+
+    <main>
+        <section id="teacherLogin" class="loginCard">
+            <span class="eyebrow">ACCESO RESTRINGIDO</span>
+            <h1>Panel de seguimiento docente</h1>
+            <p>Recibirás un enlace seguro en el correo docente autorizado. El enlace permite ingresar sin guardar una contraseña en esta página.</p>
+            <label for="teacherEmail">Correo autorizado</label>
+            <input id="teacherEmail" type="email" value="julian.eportilla25@gmail.com" readonly>
+            <button id="btnEnviarEnlace" class="primaryButton" type="button">Enviar enlace de acceso</button>
+            <p id="teacherLoginStatus" class="status" role="status" aria-live="polite"></p>
+            <a href="./" class="backLink">← Volver a la aplicación</a>
+        </section>
+
+        <section id="teacherDashboard" class="dashboard" hidden>
+            <div class="dashboardTitle">
+                <div>
+                    <span class="eyebrow">FARMACOLOGIA 2026-II</span>
+                    <h1>Resumen de aprendizaje</h1>
+                    <p id="teacherUpdatedAt">Cargando datos…</p>
+                </div>
+                <div class="dashboardActions">
+                    <button id="btnActualizar" class="secondaryButton" type="button">↻ Actualizar</button>
+                    <button id="btnExportar" class="primaryButton" type="button">Exportar CSV</button>
+                </div>
+            </div>
+
+            <div id="summaryCards" class="summaryGrid" aria-label="Indicadores principales"></div>
+
+            <div class="dashboardGrid">
+                <article class="panelCard dailyPanel">
+                    <div class="panelHeading"><div><span class="eyebrow">ÚLTIMOS 30 DÍAS</span><h2>Actividad diaria</h2></div></div>
+                    <div id="dailyChart" class="dailyChart" aria-label="Preguntas respondidas por día"></div>
+                </article>
+
+                <article class="panelCard">
+                    <div class="panelHeading"><div><span class="eyebrow">RENDIMIENTO</span><h2>Resultados por tema</h2></div></div>
+                    <div class="tableScroll">
+                        <table><thead><tr><th>Tema</th><th>Respuestas</th><th>Estudiantes</th><th>Acierto</th></tr></thead>
+                        <tbody id="topicTableBody"></tbody></table>
+                    </div>
+                </article>
+
+                <article class="panelCard studentsPanel">
+                    <div class="panelHeading">
+                        <div><span class="eyebrow">ESTUDIANTES</span><h2>Seguimiento individual</h2></div>
+                        <label class="searchLabel">Buscar <input id="studentSearch" type="search" placeholder="Nombre o código interno"></label>
+                    </div>
+                    <div class="tableScroll">
+                        <table><thead><tr><th>Estudiante</th><th>Respuestas</th><th>Correctas</th><th>Acierto</th><th>Última actividad</th></tr></thead>
+                        <tbody id="studentTableBody"></tbody></table>
+                    </div>
+                </article>
+            </div>
+            <p id="dashboardStatus" class="status" role="status" aria-live="polite"></p>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js?v=20260815-acceso-codigo"></script>
+    <script src="docente.js?v=20260815-panel-1"></script>
+</body>
+</html>

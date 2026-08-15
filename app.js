@@ -16,6 +16,7 @@ let puntaje = 0;
 
 let modoRevision = false;
 let respuestasSesion = [];
+let inicioPreguntaActual = 0;
 let temaSesion = "";
 let cursoSeleccionado = "";
 
@@ -24,6 +25,7 @@ const CLAVE_NOMBRE_USUARIO = "bankmed_nombre_usuario";
 const CLAVE_PREGUNTAS_RECIENTES = "bankmed_preguntas_recientes_v1";
 const CLAVE_AVISO_LEGAL = "bankmed_aviso_legal_v1";
 const CLAVE_ACCESO_ESTUDIANTE = "farmacologia_acceso_estudiante_v1";
+const CLAVE_COLA_RESPUESTAS = "farmacologia_cola_respuestas_v1";
 
 let clienteSupabase=null;
 
@@ -419,6 +421,8 @@ function iniciarAplicacion(){
     mostrarPantalla("inicio");
 
     configurarMascota();
+
+    sincronizarColaRespuestas();
 
     configurarAvisoLegal();
 
@@ -948,6 +952,60 @@ function mostrarEstadoAcceso(mensaje,esError){
     mensajeAccesoEstudiante.textContent=mensaje;
     mensajeAccesoEstudiante.className="mensajeAccesoEstudiante"+(esError ? " mensajeAccesoError" : "");
 }
+
+function leerColaRespuestas(){
+    try{
+        const cola=JSON.parse(localStorage.getItem(CLAVE_COLA_RESPUESTAS));
+        return Array.isArray(cola) ? cola : [];
+    }catch(error){
+        return [];
+    }
+}
+
+function encolarRespuestaRemota(respuesta){
+    const acceso=leerAccesoEstudiante();
+    if(!acceso){ return; }
+
+    const cola=leerColaRespuestas();
+    cola.push({
+        ...respuesta,
+        sessionToken:acceso.sessionToken,
+        queuedAt:new Date().toISOString()
+    });
+    localStorage.setItem(CLAVE_COLA_RESPUESTAS,JSON.stringify(cola.slice(-500)));
+    sincronizarColaRespuestas();
+}
+
+async function sincronizarColaRespuestas(){
+    if(sincronizarColaRespuestas.enCurso || !navigator.onLine){ return; }
+
+    const cliente=inicializarClienteSupabase();
+    const pendientes=leerColaRespuestas();
+    if(!cliente || pendientes.length===0){ return; }
+
+    sincronizarColaRespuestas.enCurso=true;
+    try{
+        while(pendientes.length){
+            const respuesta=pendientes[0];
+            const resultado=await cliente.rpc("record_student_answer",{
+                p_session_token:respuesta.sessionToken,
+                p_question_id:respuesta.questionId,
+                p_topic:respuesta.topic,
+                p_is_correct:respuesta.isCorrect,
+                p_response_time_seconds:respuesta.responseTimeSeconds
+            });
+            if(resultado.error){ throw resultado.error; }
+            pendientes.shift();
+            localStorage.setItem(CLAVE_COLA_RESPUESTAS,JSON.stringify(pendientes));
+        }
+    }catch(error){
+        console.warn("La respuesta se conservará para sincronizarla después:",error.message || error);
+    }finally{
+        sincronizarColaRespuestas.enCurso=false;
+    }
+}
+
+window.addEventListener("online",sincronizarColaRespuestas);
 
 //===============================
 // CAMBIAR PANTALLAS
@@ -1640,6 +1698,7 @@ function mostrarPregunta(){
     btnResponder.onclick=corregirPregunta;
 
     const pregunta=preguntasExamen[indicePregunta];
+    inicioPreguntaActual=performance.now();
 
     progreso.innerHTML=
     "Pregunta "+
@@ -1790,6 +1849,13 @@ function corregirPregunta(){
             curso:cursoPregunta,
             subtema:subtemaPregunta,
             correcta:respuesta===pregunta.correcta
+        });
+
+        encolarRespuestaRemota({
+            questionId:String(pregunta.id),
+            topic:subtemaPregunta,
+            isCorrect:respuesta===pregunta.correcta,
+            responseTimeSeconds:Math.max(0,Math.round((performance.now()-inicioPreguntaActual)/1000))
         });
 
     }
