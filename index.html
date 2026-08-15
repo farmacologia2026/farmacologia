@@ -47,6 +47,17 @@
             <p class="descripcionInstitucional">Plataforma educativa de farmacología</p>
         </div>
 
+        <div id="controlesSesionEstudiante" class="controlesSesionEstudiante" hidden>
+            <div class="identidadEstudiante">
+                <span aria-hidden="true">👤</span>
+                <span><strong id="nombreSesionEstudiante"></strong><small id="vencimientoSesionEstudiante"></small></span>
+            </div>
+            <div class="accionesSesionEstudiante">
+                <button id="btnCambiarEstudiante" type="button">Cambiar estudiante</button>
+                <button id="btnCerrarSesionEstudiante" type="button">Cerrar sesión</button>
+            </div>
+        </div>
+
         <nav class="navegacionHeader" aria-label="Navegación principal">
             <button id="btnPreguntasCursos" class="botonQuienSoy" type="button">Preguntas de Farmacología</button>
             <button id="btnTablasApuntes" class="botonQuienSoy" type="button">Material de estudio</button>
@@ -1510,7 +1521,7 @@ ADN, ARN y división celular</div>
     <script src="supabase-config.js?v=20260815-acceso-codigo"></script>
     <script src="preguntas.js?v=20260814-preguntas-farmacocinetica"></script>
 
-    <script src="app.js?v=20260815-panel-docente"></script>
+    <script src="app.js?v=20260815-sesiones-estudiantes"></script>
 
 </body>
 

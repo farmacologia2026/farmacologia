@@ -3192,6 +3192,47 @@ ENCABEZADO INSTITUCIONAL PROVISIONAL
     text-align:right;
 }
 
+.controlesSesionEstudiante{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    width:100%;
+    padding:9px clamp(20px,5vw,80px);
+    border-top:1px solid #dbe7f4;
+    background:#f4f8fd;
+}
+
+.controlesSesionEstudiante[hidden]{display:none}
+
+.identidadEstudiante{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+}
+
+.identidadEstudiante > span:last-child{display:grid;text-align:left}
+.identidadEstudiante strong{color:#123b72;font-size:14px}
+.identidadEstudiante small{color:#667b94;font-size:11px}
+.accionesSesionEstudiante{display:flex;gap:8px}
+
+.accionesSesionEstudiante button{
+    width:auto;
+    margin:0;
+    padding:7px 11px;
+    border:1px solid #b9d0e9;
+    border-radius:9px;
+    background:#fff;
+    color:#075abf;
+    font-size:12px;
+    font-weight:750;
+    box-shadow:none;
+}
+
+.accionesSesionEstudiante button:last-child{color:#a83232;border-color:#e0bcbc}
+.accionesSesionEstudiante button:hover{background:#e9f3ff}
+
 .navegacionHeader{
     width:100%;
     gap:4px;
@@ -3262,6 +3303,24 @@ ENCABEZADO INSTITUCIONAL PROVISIONAL
         max-width:none;
         font-size:13px;
         text-align:left;
+    }
+
+    .controlesSesionEstudiante{
+        align-items:stretch;
+        flex-direction:column;
+        gap:7px;
+        padding:8px 12px;
+    }
+
+    .accionesSesionEstudiante{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .accionesSesionEstudiante button{
+        min-height:36px;
+        padding:6px 8px;
+        font-size:11px;
     }
 
     .navegacionHeader{

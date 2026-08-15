@@ -26,6 +26,7 @@ const CLAVE_PREGUNTAS_RECIENTES = "bankmed_preguntas_recientes_v1";
 const CLAVE_AVISO_LEGAL = "bankmed_aviso_legal_v1";
 const CLAVE_ACCESO_ESTUDIANTE = "farmacologia_acceso_estudiante_v1";
 const CLAVE_COLA_RESPUESTAS = "farmacologia_cola_respuestas_v1";
+const DURACION_SESION_ESTUDIANTE_MS = 7*24*60*60*1000;
 
 let clienteSupabase=null;
 
@@ -297,6 +298,12 @@ document.getElementById("btnAbrirAvisoLegal");
 
 const saludoUsuario =
 document.getElementById("saludoUsuario");
+
+const controlesSesionEstudiante=document.getElementById("controlesSesionEstudiante");
+const nombreSesionEstudiante=document.getElementById("nombreSesionEstudiante");
+const vencimientoSesionEstudiante=document.getElementById("vencimientoSesionEstudiante");
+const btnCambiarEstudiante=document.getElementById("btnCambiarEstudiante");
+const btnCerrarSesionEstudiante=document.getElementById("btnCerrarSesionEstudiante");
 
 //===============================
 // CONTROLES
@@ -769,6 +776,7 @@ function configurarMascota(){
     const nombreGuardado=accesoGuardado ? accesoGuardado.displayName : "";
 
     actualizarSaludoMascota(nombreGuardado);
+    actualizarControlesSesion(accesoGuardado);
 
     inicializarClienteSupabase();
 
@@ -779,8 +787,12 @@ function configurarMascota(){
     }
 
     btnMascota.onclick=function(){
-
-        mostrarModalNombre();
+        const acceso=leerAccesoEstudiante();
+        if(acceso){
+            mostrarAvisoGuilbert("👋 Sesión activa de "+acceso.displayName+". Usa los controles superiores si deseas cambiar de estudiante.");
+        }else{
+            mostrarModalNombre();
+        }
 
     };
 
@@ -803,6 +815,17 @@ function configurarMascota(){
         }
 
     });
+
+    btnCambiarEstudiante.onclick=function(){ cerrarSesionEstudiante(true); };
+    btnCerrarSesionEstudiante.onclick=function(){ cerrarSesionEstudiante(false); };
+
+    setInterval(function(){
+        const acceso=leerAccesoEstudiante();
+        actualizarControlesSesion(acceso);
+        if(!acceso && accesoPorCodigoRequerido()){
+            mostrarModalNombre();
+        }
+    },60000);
 
 }
 
@@ -887,6 +910,16 @@ function leerAccesoEstudiante(){
             return null;
         }
 
+        const vencimiento=acceso.expiresAt ? new Date(acceso.expiresAt).getTime() :
+            new Date(acceso.accessedAt).getTime()+DURACION_SESION_ESTUDIANTE_MS;
+
+        if(!Number.isFinite(vencimiento) || vencimiento<=Date.now()){
+            limpiarDatosSesionLocal();
+            return null;
+        }
+
+        acceso.expiresAt=new Date(vencimiento).toISOString();
+
         return acceso;
     }catch(error){
         return null;
@@ -931,12 +964,14 @@ async function validarCodigoEstudiante(){
             studentId:acceso.student_id,
             displayName:acceso.display_name,
             sessionToken:acceso.session_token,
-            accessedAt:new Date().toISOString()
+            accessedAt:new Date().toISOString(),
+            expiresAt:new Date(Date.now()+DURACION_SESION_ESTUDIANTE_MS).toISOString()
         };
 
         localStorage.setItem(CLAVE_ACCESO_ESTUDIANTE,JSON.stringify(sesion));
         localStorage.setItem(CLAVE_NOMBRE_USUARIO,sesion.displayName);
         actualizarSaludoMascota(sesion.displayName);
+        actualizarControlesSesion(sesion);
         mostrarEstadoAcceso("Acceso correcto. Preparando la plataforma…",false);
         setTimeout(cerrarModalNombre,350);
     }catch(error){
@@ -951,6 +986,80 @@ async function validarCodigoEstudiante(){
 function mostrarEstadoAcceso(mensaje,esError){
     mensajeAccesoEstudiante.textContent=mensaje;
     mensajeAccesoEstudiante.className="mensajeAccesoEstudiante"+(esError ? " mensajeAccesoError" : "");
+}
+
+function actualizarControlesSesion(acceso){
+    controlesSesionEstudiante.hidden=!acceso;
+    if(!acceso){
+        nombreSesionEstudiante.textContent="";
+        vencimientoSesionEstudiante.textContent="";
+        return;
+    }
+
+    nombreSesionEstudiante.textContent=acceso.displayName;
+    vencimientoSesionEstudiante.textContent="Sesión válida hasta "+new Date(acceso.expiresAt).toLocaleString("es-PE",{
+        day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"
+    });
+}
+
+function limpiarDatosSesionLocal(){
+    localStorage.removeItem(CLAVE_ACCESO_ESTUDIANTE);
+    localStorage.removeItem(CLAVE_NOMBRE_USUARIO);
+    localStorage.removeItem(CLAVE_ESTADISTICAS);
+    localStorage.removeItem(CLAVE_PREGUNTAS_RECIENTES);
+    actualizarSaludoMascota("");
+    actualizarControlesSesion(null);
+}
+
+async function cerrarSesionEstudiante(cambiarEstudiante){
+    const acceso=leerAccesoEstudiante();
+    if(!acceso){
+        limpiarDatosSesionLocal();
+        mostrarModalNombre();
+        return;
+    }
+
+    if(leerColaRespuestas().length>0 && !navigator.onLine){
+        alert("Hay respuestas pendientes de sincronización. Conéctate a Internet antes de cerrar o cambiar la sesión.");
+        return;
+    }
+
+    btnCambiarEstudiante.disabled=true;
+    btnCerrarSesionEstudiante.disabled=true;
+    await sincronizarColaRespuestas();
+
+    if(leerColaRespuestas().length>0){
+        alert("Aún no fue posible sincronizar todas las respuestas. Inténtalo nuevamente en unos momentos.");
+        btnCambiarEstudiante.disabled=false;
+        btnCerrarSesionEstudiante.disabled=false;
+        return;
+    }
+
+    const cliente=inicializarClienteSupabase();
+    if(!cliente){
+        alert("No fue posible conectar con el servicio para cerrar la sesión.");
+        btnCambiarEstudiante.disabled=false;
+        btnCerrarSesionEstudiante.disabled=false;
+        return;
+    }
+
+    const resultado=await cliente.rpc("close_student_session",{p_session_token:acceso.sessionToken});
+    if(resultado.error){
+        alert("No fue posible cerrar la sesión de forma segura. Inténtalo nuevamente.");
+        btnCambiarEstudiante.disabled=false;
+        btnCerrarSesionEstudiante.disabled=false;
+        return;
+    }
+
+    limpiarDatosSesionLocal();
+    respuestasSesion=[];
+    preguntasExamen=[];
+    preguntasIncorrectas=[];
+    mostrarPantalla("inicio");
+    mostrarModalNombre();
+    mostrarEstadoAcceso(cambiarEstudiante ? "Ingresa el código del nuevo estudiante." : "Sesión cerrada correctamente.",false);
+    btnCambiarEstudiante.disabled=false;
+    btnCerrarSesionEstudiante.disabled=false;
 }
 
 function leerColaRespuestas(){
@@ -1012,6 +1121,11 @@ window.addEventListener("online",sincronizarColaRespuestas);
 //===============================
 
 function mostrarPantalla(nombre){
+
+    if(accesoPorCodigoRequerido() && !leerAccesoEstudiante()){
+        nombre="inicio";
+        mostrarModalNombre();
+    }
 
     pantallaInicio.style.display="none";
     pantallaSeleccion.style.display="none";

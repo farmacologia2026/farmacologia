@@ -1,4 +1,4 @@
-const CACHE_NAME = "plataforma-pwa-v40-panel-docente-20260815";
+const CACHE_NAME = "plataforma-pwa-v41-sesiones-estudiantes-20260815";
 
 const APP_SHELL = [
     "./",
