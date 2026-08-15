@@ -2548,6 +2548,24 @@ MÓVIL
     border-color:#1976ff;
 }
 
+.mensajeAccesoEstudiante{
+    min-height:20px;
+    margin:8px 0 0 !important;
+    color:#0758c9;
+    font-size:13px;
+    font-weight:700;
+}
+
+.mensajeAccesoEstudiante.mensajeAccesoError{
+    color:#b42318;
+}
+
+.tarjetaNombre input:disabled,
+.accionesNombre button:disabled{
+    cursor:wait;
+    opacity:.65;
+}
+
 .saludoUsuario{
     margin:7px 0 3px !important;
     color:#0758c9;

@@ -23,6 +23,9 @@ const CLAVE_ESTADISTICAS = "bankmed_estadisticas_v1";
 const CLAVE_NOMBRE_USUARIO = "bankmed_nombre_usuario";
 const CLAVE_PREGUNTAS_RECIENTES = "bankmed_preguntas_recientes_v1";
 const CLAVE_AVISO_LEGAL = "bankmed_aviso_legal_v1";
+const CLAVE_ACCESO_ESTUDIANTE = "farmacologia_acceso_estudiante_v1";
+
+let clienteSupabase=null;
 
 // Organización de los 26 temas del sílabo de Farmacología 2026-II.
 const GRUPOS_SUBTEMAS_FARMACOLOGIA = [
@@ -274,6 +277,9 @@ document.getElementById("btnGuardarNombre");
 
 const btnOmitirNombre =
 document.getElementById("btnOmitirNombre");
+
+const mensajeAccesoEstudiante =
+document.getElementById("mensajeAccesoEstudiante");
 
 const modalAvisoLegal =
 document.getElementById("modalAvisoLegal");
@@ -755,11 +761,14 @@ function mostrarCatalogoMaterial(){
 
 function configurarMascota(){
 
-    const nombreGuardado=localStorage.getItem(CLAVE_NOMBRE_USUARIO);
+    const accesoGuardado=leerAccesoEstudiante();
+    const nombreGuardado=accesoGuardado ? accesoGuardado.displayName : "";
 
     actualizarSaludoMascota(nombreGuardado);
 
-    if(!nombreGuardado){
+    inicializarClienteSupabase();
+
+    if(!accesoGuardado && accesoPorCodigoRequerido()){
 
         mostrarModalNombre();
 
@@ -771,13 +780,13 @@ function configurarMascota(){
 
     };
 
-    btnGuardarNombre.onclick=guardarNombreUsuario;
+    btnGuardarNombre.onclick=validarCodigoEstudiante;
 
     btnOmitirNombre.onclick=function(){
 
-        cerrarModalNombre();
-        mensajeMascota.textContent="¡Hola! Soy Guilbert. Cuando quieras, toca mi patita para saludar.";
-        saludoUsuario.textContent="";
+        if(!accesoPorCodigoRequerido()){
+            cerrarModalNombre();
+        }
 
     };
 
@@ -785,7 +794,7 @@ function configurarMascota(){
 
         if(evento.key==="Enter"){
 
-            guardarNombreUsuario();
+            validarCodigoEstudiante();
 
         }
 
@@ -814,7 +823,8 @@ function mostrarAvisoGuilbert(mensaje){
     mostrarAvisoGuilbert.temporizador=setTimeout(function(){
 
         mascotaSaludo.classList.remove("mascotaAbierta");
-        actualizarSaludoMascota(localStorage.getItem(CLAVE_NOMBRE_USUARIO));
+        const acceso=leerAccesoEstudiante();
+        actualizarSaludoMascota(acceso ? acceso.displayName : "");
 
     },7000);
 
@@ -822,7 +832,9 @@ function mostrarAvisoGuilbert(mensaje){
 
 function mostrarModalNombre(){
 
-    inputNombre.value=localStorage.getItem(CLAVE_NOMBRE_USUARIO) || "";
+    inputNombre.value="";
+    mensajeAccesoEstudiante.textContent="";
+    mensajeAccesoEstudiante.className="mensajeAccesoEstudiante";
     modalNombre.style.display="flex";
     mascotaSaludo.classList.add("mascotaAbierta");
 
@@ -841,21 +853,100 @@ function cerrarModalNombre(){
 
 }
 
-function guardarNombreUsuario(){
+function accesoPorCodigoRequerido(){
+    return Boolean(window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.requireStudentCode);
+}
 
-    const nombre=inputNombre.value.trim().replace(/\s+/g," ").slice(0,30);
+function inicializarClienteSupabase(){
+    const configuracion=window.SUPABASE_CONFIG;
 
-    if(!nombre){
-
-        inputNombre.focus();
-        return;
-
+    if(!configuracion || !window.supabase || !configuracion.projectUrl || !configuracion.publishableKey){
+        return null;
     }
 
-    localStorage.setItem(CLAVE_NOMBRE_USUARIO,nombre);
-    actualizarSaludoMascota(nombre);
-    cerrarModalNombre();
+    if(!clienteSupabase){
+        clienteSupabase=window.supabase.createClient(
+            configuracion.projectUrl,
+            configuracion.publishableKey,
+            {auth:{persistSession:false,autoRefreshToken:false}}
+        );
+    }
 
+    return clienteSupabase;
+}
+
+function leerAccesoEstudiante(){
+    try{
+        const acceso=JSON.parse(localStorage.getItem(CLAVE_ACCESO_ESTUDIANTE));
+
+        if(!acceso || !acceso.studentId || !acceso.sessionToken || !acceso.displayName){
+            return null;
+        }
+
+        return acceso;
+    }catch(error){
+        return null;
+    }
+}
+
+async function validarCodigoEstudiante(){
+    const codigo=inputNombre.value.trim().toUpperCase().slice(0,32);
+
+    if(codigo.length<4){
+        mostrarEstadoAcceso("Ingresa un código institucional válido.",true);
+        inputNombre.focus();
+        return;
+    }
+
+    const cliente=inicializarClienteSupabase();
+
+    if(!cliente){
+        mostrarEstadoAcceso("No se pudo conectar con el servicio. Revisa tu conexión e inténtalo nuevamente.",true);
+        return;
+    }
+
+    btnGuardarNombre.disabled=true;
+    inputNombre.disabled=true;
+    mostrarEstadoAcceso("Verificando código…",false);
+
+    try{
+        const resultado=await cliente.rpc("student_login",{p_code:codigo});
+
+        if(resultado.error){
+            throw resultado.error;
+        }
+
+        const acceso=Array.isArray(resultado.data) ? resultado.data[0] : null;
+
+        if(!acceso){
+            mostrarEstadoAcceso("Código no registrado o inactivo. Verifica el dato con tu docente.",true);
+            return;
+        }
+
+        const sesion={
+            studentId:acceso.student_id,
+            displayName:acceso.display_name,
+            sessionToken:acceso.session_token,
+            accessedAt:new Date().toISOString()
+        };
+
+        localStorage.setItem(CLAVE_ACCESO_ESTUDIANTE,JSON.stringify(sesion));
+        localStorage.setItem(CLAVE_NOMBRE_USUARIO,sesion.displayName);
+        actualizarSaludoMascota(sesion.displayName);
+        mostrarEstadoAcceso("Acceso correcto. Preparando la plataforma…",false);
+        setTimeout(cerrarModalNombre,350);
+    }catch(error){
+        console.error("No se pudo validar el código institucional:",error);
+        mostrarEstadoAcceso("No fue posible validar el código. Inténtalo nuevamente en unos momentos.",true);
+    }finally{
+        btnGuardarNombre.disabled=false;
+        inputNombre.disabled=false;
+    }
+}
+
+function mostrarEstadoAcceso(mensaje,esError){
+    mensajeAccesoEstudiante.textContent=mensaje;
+    mensajeAccesoEstudiante.className="mensajeAccesoEstudiante"+(esError ? " mensajeAccesoError" : "");
 }
 
 //===============================

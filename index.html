@@ -1433,14 +1433,15 @@ ADN, ARN y división celular</div>
         <div class="tarjetaNombre">
             <img src="mascota-perrito.png?v=20260802-guilbert" alt="Guilbert, schnauzer mascota de la plataforma saludando">
             <div>
-                <span class="etiquetaMascota">MASCOTA DE LA PLATAFORMA</span>
+                <span class="etiquetaMascota">ACCESO DE ESTUDIANTES</span>
                 <h2 id="tituloModalNombre">¡Hola! Soy Guilbert</h2>
-                <p>Antes de empezar, ¿cómo te llamas?</p>
-                <label class="srOnly" for="inputNombre">Tu nombre</label>
-                <input id="inputNombre" type="text" maxlength="30" autocomplete="given-name" placeholder="Escribe tu nombre">
+                <p>Ingresa el código asignado por la universidad para acceder a la plataforma.</p>
+                <label class="srOnly" for="inputNombre">Código institucional</label>
+                <input id="inputNombre" type="text" maxlength="32" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Código institucional">
+                <p id="mensajeAccesoEstudiante" class="mensajeAccesoEstudiante" role="status" aria-live="polite"></p>
                 <div class="accionesNombre">
-                    <button id="btnGuardarNombre" type="button">Continuar</button>
-                    <button id="btnOmitirNombre" class="botonTexto" type="button">Ahora no</button>
+                    <button id="btnGuardarNombre" type="button">Ingresar</button>
+                    <button id="btnOmitirNombre" class="botonTexto" type="button" hidden>Ahora no</button>
                 </div>
             </div>
         </div>
@@ -1484,8 +1485,8 @@ ADN, ARN y división celular</div>
 
             <div class="bloqueAvisoLegal">
                 <h3>🔒 Privacidad</h3>
-                <p>La plataforma no crea cuentas ni envía tu nombre, progreso o estadísticas a un servidor. Estos datos se guardan únicamente en el almacenamiento local de este navegador.</p>
-                <p>Si borras los datos de navegación, cambias de navegador o usas otro dispositivo, tu progreso no se conservará.</p>
+                <p>La plataforma utiliza un código institucional para identificar el acceso y registrar la actividad académica en una base de datos protegida. Se podrán almacenar sesiones, respuestas, aciertos, errores, temas practicados y tiempo de respuesta.</p>
+                <p>Estos datos se utilizarán con fines educativos y estadísticos para acompañar el aprendizaje. No compartas tu código con otras personas.</p>
             </div>
 
             <div class="bloqueAvisoLegal">
@@ -1502,9 +1503,11 @@ ADN, ARN y división celular</div>
     <!-- JAVASCRIPT -->
     <!--========================================-->
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js?v=20260815-acceso-codigo"></script>
     <script src="preguntas.js?v=20260814-preguntas-farmacocinetica"></script>
 
-    <script src="app.js?v=20260815-curvas-farmacodinamia"></script>
+    <script src="app.js?v=20260815-acceso-codigo"></script>
 
 </body>
 

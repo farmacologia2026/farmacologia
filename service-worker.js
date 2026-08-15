@@ -1,10 +1,11 @@
-const CACHE_NAME = "plataforma-pwa-v38-dos-curvas-20260815";
+const CACHE_NAME = "plataforma-pwa-v39-acceso-codigo-20260815";
 
 const APP_SHELL = [
     "./",
     "./index.html",
     "./style.css",
     "./app.js",
+    "./supabase-config.js",
     "./preguntas.js",
     "./manifest.webmanifest",
     "./plataforma-icon.svg",
