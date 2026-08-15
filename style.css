@@ -3215,7 +3215,11 @@ ENCABEZADO INSTITUCIONAL PROVISIONAL
 .identidadEstudiante > span:last-child{display:grid;text-align:left}
 .identidadEstudiante strong{color:#123b72;font-size:14px}
 .identidadEstudiante small{color:#667b94;font-size:11px}
-.accionesSesionEstudiante{display:flex;gap:8px}
+.accionesSesionEstudiante{
+    display:flex;
+    justify-content:flex-end;
+    margin-left:auto;
+}
 
 .accionesSesionEstudiante button{
     width:auto;
@@ -3306,19 +3310,21 @@ ENCABEZADO INSTITUCIONAL PROVISIONAL
     }
 
     .controlesSesionEstudiante{
-        align-items:stretch;
-        flex-direction:column;
+        align-items:center;
+        flex-direction:row;
         gap:7px;
         padding:8px 12px;
     }
 
     .accionesSesionEstudiante{
-        display:grid;
-        grid-template-columns:1fr 1fr;
+        display:flex;
+        justify-content:flex-end;
+        flex:0 0 auto;
     }
 
     .accionesSesionEstudiante button{
-        min-height:36px;
+        width:auto;
+        min-height:32px;
         padding:6px 8px;
         font-size:11px;
     }

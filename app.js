@@ -26,7 +26,7 @@ const CLAVE_PREGUNTAS_RECIENTES = "bankmed_preguntas_recientes_v1";
 const CLAVE_AVISO_LEGAL = "bankmed_aviso_legal_v1";
 const CLAVE_ACCESO_ESTUDIANTE = "farmacologia_acceso_estudiante_v1";
 const CLAVE_COLA_RESPUESTAS = "farmacologia_cola_respuestas_v1";
-const DURACION_SESION_ESTUDIANTE_MS = 7*24*60*60*1000;
+const DURACION_SESION_ESTUDIANTE_MS = 24*60*60*1000;
 
 let clienteSupabase=null;
 
@@ -302,7 +302,6 @@ document.getElementById("saludoUsuario");
 const controlesSesionEstudiante=document.getElementById("controlesSesionEstudiante");
 const nombreSesionEstudiante=document.getElementById("nombreSesionEstudiante");
 const vencimientoSesionEstudiante=document.getElementById("vencimientoSesionEstudiante");
-const btnCambiarEstudiante=document.getElementById("btnCambiarEstudiante");
 const btnCerrarSesionEstudiante=document.getElementById("btnCerrarSesionEstudiante");
 
 //===============================
@@ -816,8 +815,7 @@ function configurarMascota(){
 
     });
 
-    btnCambiarEstudiante.onclick=function(){ cerrarSesionEstudiante(true); };
-    btnCerrarSesionEstudiante.onclick=function(){ cerrarSesionEstudiante(false); };
+    btnCerrarSesionEstudiante.onclick=cerrarSesionEstudiante;
 
     setInterval(function(){
         const acceso=leerAccesoEstudiante();
@@ -910,8 +908,9 @@ function leerAccesoEstudiante(){
             return null;
         }
 
-        const vencimiento=acceso.expiresAt ? new Date(acceso.expiresAt).getTime() :
-            new Date(acceso.accessedAt).getTime()+DURACION_SESION_ESTUDIANTE_MS;
+        const vencimientoLocal=new Date(acceso.accessedAt).getTime()+DURACION_SESION_ESTUDIANTE_MS;
+        const vencimientoServidor=acceso.expiresAt ? new Date(acceso.expiresAt).getTime() : vencimientoLocal;
+        const vencimiento=Math.min(vencimientoLocal,vencimientoServidor);
 
         if(!Number.isFinite(vencimiento) || vencimiento<=Date.now()){
             limpiarDatosSesionLocal();
@@ -1011,7 +1010,7 @@ function limpiarDatosSesionLocal(){
     actualizarControlesSesion(null);
 }
 
-async function cerrarSesionEstudiante(cambiarEstudiante){
+async function cerrarSesionEstudiante(){
     const acceso=leerAccesoEstudiante();
     if(!acceso){
         limpiarDatosSesionLocal();
@@ -1020,17 +1019,15 @@ async function cerrarSesionEstudiante(cambiarEstudiante){
     }
 
     if(leerColaRespuestas().length>0 && !navigator.onLine){
-        alert("Hay respuestas pendientes de sincronización. Conéctate a Internet antes de cerrar o cambiar la sesión.");
+        alert("Hay respuestas pendientes de sincronización. Conéctate a Internet antes de cerrar la sesión.");
         return;
     }
 
-    btnCambiarEstudiante.disabled=true;
     btnCerrarSesionEstudiante.disabled=true;
     await sincronizarColaRespuestas();
 
     if(leerColaRespuestas().length>0){
         alert("Aún no fue posible sincronizar todas las respuestas. Inténtalo nuevamente en unos momentos.");
-        btnCambiarEstudiante.disabled=false;
         btnCerrarSesionEstudiante.disabled=false;
         return;
     }
@@ -1038,7 +1035,6 @@ async function cerrarSesionEstudiante(cambiarEstudiante){
     const cliente=inicializarClienteSupabase();
     if(!cliente){
         alert("No fue posible conectar con el servicio para cerrar la sesión.");
-        btnCambiarEstudiante.disabled=false;
         btnCerrarSesionEstudiante.disabled=false;
         return;
     }
@@ -1046,7 +1042,6 @@ async function cerrarSesionEstudiante(cambiarEstudiante){
     const resultado=await cliente.rpc("close_student_session",{p_session_token:acceso.sessionToken});
     if(resultado.error){
         alert("No fue posible cerrar la sesión de forma segura. Inténtalo nuevamente.");
-        btnCambiarEstudiante.disabled=false;
         btnCerrarSesionEstudiante.disabled=false;
         return;
     }
@@ -1057,8 +1052,7 @@ async function cerrarSesionEstudiante(cambiarEstudiante){
     preguntasIncorrectas=[];
     mostrarPantalla("inicio");
     mostrarModalNombre();
-    mostrarEstadoAcceso(cambiarEstudiante ? "Ingresa el código del nuevo estudiante." : "Sesión cerrada correctamente.",false);
-    btnCambiarEstudiante.disabled=false;
+    mostrarEstadoAcceso("Sesión cerrada correctamente.",false);
     btnCerrarSesionEstudiante.disabled=false;
 }
 
