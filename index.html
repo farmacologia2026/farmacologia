@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Versión beta y piloto de la plataforma educativa de Farmacología 2026-II.">
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="application-name" content="FARMACOLOGIA">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="FARMACOLOGIA">
+    <link rel="manifest" href="manifest.webmanifest?v=20260815-version-beta">
+    <link rel="icon" type="image/svg+xml" href="plataforma-icon.svg?v=20260814-capsula">
+
+    <title>FARMACOLOGIA · Versión beta</title>
+
+    <link rel="stylesheet" href="style.css?v=20260815-dos-curvas">
+
+</head>
+
+<body>
+
+    <!--========================================-->
+    <!-- ENCABEZADO -->
+    <!--========================================-->
+
+    <header class="header">
+
+        <div class="cabeceraInstitucional">
+            <div class="marcaTemporal" aria-label="FARMACOLOGIA">
+                <div class="logoTemporal">
+                    <img src="plataforma-icon.svg?v=20260814-capsula" alt="Logotipo de FARMACOLOGIA: una cápsula">
+                </div>
+                <div class="textoMarcaTemporal">
+                    <div class="nombreConVersion">
+                        <strong>FARMACOLOGIA</strong>
+                        <span class="insigniaBeta">BETA · PILOTO</span>
+                    </div>
+                    <small>Aprende · Practica · Avanza</small>
+                </div>
+            </div>
+
+            <p class="descripcionInstitucional">Plataforma educativa de farmacología</p>
+        </div>
+
+        <nav class="navegacionHeader" aria-label="Navegación principal">
+            <button id="btnPreguntasCursos" class="botonQuienSoy" type="button">Preguntas de Farmacología</button>
+            <button id="btnTablasApuntes" class="botonQuienSoy" type="button">Material de estudio</button>
+            <button id="btnBanqueo" class="botonQuienSoy" type="button">Banqueo</button>
+            <button id="btnEstadisticas" class="botonQuienSoy" type="button">Mi progreso</button>
+            <button id="btnInstalarPWA" class="botonQuienSoy botonInstalarPWA" type="button">⬇️ Instalar aplicación</button>
+        </nav>
+
+    </header>
+
+    <!--========================================-->
+    <!-- PANTALLA DE INICIO -->
+    <!--========================================-->
+
+    <div class="contenedor" id="pantallaInicio">
+
+        <div class="encabezadoCursos inicioBienvenida">
+            <div>
+                <span class="iconoBienvenida" aria-hidden="true">💊</span>
+                <h2>Bienvenido a la plataforma</h2>
+                <p id="saludoUsuario" class="saludoUsuario" aria-live="polite"></p>
+                <p>Fortalece tus conocimientos de farmacología mediante preguntas, material de estudio y simulacros.</p>
+                <p class="indicacionInicio">Selecciona una opción del menú superior para comenzar.</p>
+            </div>
+        </div>
+
+        <section class="resumenBanco" aria-label="Total de preguntas disponibles">
+            <div>
+                <span>BANCO DE PREGUNTAS</span>
+                <p>Preguntas disponibles para practicar farmacología.</p>
+            </div>
+            <strong id="totalPreguntasBanco" aria-live="polite">0</strong>
+        </section>
+
+    </div>
+
+    <!--========================================-->
+    <!-- BANQUEO PERSONALIZADO -->
+    <!--========================================-->
+
+    <div class="contenedor" id="pantallaBanqueo" style="display:none;">
+        <section class="seccionQuienSoy">
+            <span class="etiquetaSeccion">PRÁCTICA PERSONALIZADA</span>
+            <h2>Banqueo de Farmacología</h2>
+        </section>
+
+        <section class="seleccionBanqueo" aria-label="Configuración del banqueo">
+            <fieldset class="selectorModalidad opcionesModalidadBanqueo">
+                <legend>🎯 Elige cómo deseas realizar el banqueo</legend>
+
+                <label class="opcionModalidad">
+                    <input type="radio" name="modalidadBanqueo" value="general" checked>
+                    <span>
+                        <strong>🔀 Banqueo general</strong>
+                        <small>Selecciona hasta 20 preguntas aleatorias de los temas habilitados esta semana.</small>
+                    </span>
+                </label>
+
+                <label class="opcionModalidad">
+                    <input type="radio" name="modalidadBanqueo" value="personalizado">
+                    <span>
+                        <strong>⚙️ Banqueo por subtemas</strong>
+                        <small>Permite elegir entre los temas habilitados durante la semana actual.</small>
+                    </span>
+                </label>
+            </fieldset>
+
+            <p id="descripcionBanqueo" class="descripcionBanqueo">Se utilizarán únicamente preguntas de Farmacocinética y Farmacodinámica, correspondientes a la primera semana.</p>
+
+            <div id="personalizarBanqueo" class="personalizarBanqueo" hidden>
+                <h3>Selecciona los subtemas</h3>
+                <p>Marca uno o varios subtemas para construir tu banqueo personalizado.</p>
+                <div id="opcionesSubtemasBanqueo" class="opcionesBanqueo"></div>
+                <small>Si los subtemas elegidos reúnen menos de 20 preguntas, se utilizarán todas las disponibles.</small>
+            </div>
+
+            <button id="btnIniciarBanqueo" class="botonBanqueo" type="button">📝 Iniciar banqueo · 20 preguntas</button>
+        </section>
+
+        <section class="regresoInicio" aria-label="Navegación">
+            <div>
+                <strong>¿Deseas cambiar de actividad?</strong>
+                <small>Regresa al menú principal para elegir otra forma de practicar.</small>
+            </div>
+            <button id="btnVolverBanqueo" class="botonVolverCursos" type="button">← Menú principal</button>
+        </section>
+    </div>
+
+    <!--========================================-->
+    <!-- MATERIAL DE ESTUDIO -->
+    <!--========================================-->
+
+    <div class="contenedor" id="pantallaTablasApuntes" style="display:none;">
+        <section class="seccionQuienSoy">
+            <span class="etiquetaSeccion etiquetaPotenciaEstudio">POTENCIA TU ESTUDIO</span>
+            <h2 class="tituloMaterialEstudio">Material de estudio</h2>
+            <p>En esta sección encontrarás tablas de resumen, esquemas y apuntes elaborados para complementar tu práctica con preguntas.</p>
+            <p>El material de Farmacología está organizado por temas para que puedas localizarlo rápidamente mientras estudias.</p>
+        </section>
+
+        <section id="catalogoMaterial" class="catalogoMaterial" aria-labelledby="tituloCatalogoMaterial">
+            <span class="etiquetaSeccion">MATERIALES DISPONIBLES</span>
+            <h3 id="tituloCatalogoMaterial">Selecciona un tema para estudiar</h3>
+            <p>Durante la primera semana estarán habilitados únicamente Farmacocinética y Farmacodinámica. Guilbert te avisará cuando los demás temas estén disponibles.</p>
+
+            <div class="selectorMaterial">
+                <div id="grupoTemaMaterial">
+                    <label for="selectTemaMaterial">🧪 Subtema de Farmacología</label>
+                    <select id="selectTemaMaterial">
+                        <option value="paredBacteriana">Antimicrobianos · Inhibidores de la pared bacteriana</option>
+                        <option value="metabolismo">Antimicrobianos · Inhibidores del metabolismo</option>
+                    </select>
+
+                    <button id="btnVerMaterial" class="botonVerMaterial" type="button">📖 Ver material</button>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="materialFarmacodinamica" class="materialFarmacologia materialCurvas" aria-labelledby="tituloCurvasFarmacodinamia" style="display:none;">
+            <button id="btnVolverCatalogoFarmacodinamica" class="enlaceVolver" type="button">← Volver a materiales</button>
+            <span class="etiquetaSeccion">FARMACOLOGÍA · FARMACODINÁMICA</span>
+            <h3 id="tituloCurvasFarmacodinamia">Curvas dosis–respuesta</h3>
+            <p class="descripcionMaterial">Dos gráficos vectoriales para reconocer potencia y eficacia. El eje horizontal representa la concentración o dosis en escala logarítmica y el vertical, la magnitud del efecto.</p>
+
+            <div class="tablasBaseFarmacodinamia">
+                <article class="bloqueTablaFarmacodinamia">
+                    <h4>Conceptos fundamentales</h4>
+                    <p>Esta tabla ayuda a distinguir qué propiedad farmacodinámica se está evaluando y cuál es su indicador más habitual.</p>
+                    <div class="tablaResponsive">
+                        <table class="tablaEstudio tablaConceptosFarmacodinamia">
+                            <thead><tr><th>Concepto</th><th>Pregunta que responde</th><th>Indicador</th></tr></thead>
+                            <tbody>
+                                <tr><td>Afinidad</td><td>¿Qué tan fuertemente se une?</td><td><strong>K<sub>D</sub></strong></td></tr>
+                                <tr><td>Potencia</td><td>¿Qué concentración se necesita?</td><td><strong>EC<sub>50</sub></strong></td></tr>
+                                <tr><td>Eficacia</td><td>¿Cuál es el efecto máximo posible?</td><td><strong>Emax</strong></td></tr>
+                                <tr><td>Selectividad</td><td>¿Sobre qué diana actúa preferentemente?</td><td>Comparación de afinidades o efectos</td></tr>
+                                <tr><td>Actividad intrínseca</td><td>¿Cuánto activa al receptor después de unirse?</td><td>Respuesta relativa</td></tr>
+                                <tr><td>Seguridad</td><td>¿Qué distancia existe entre la dosis útil y la tóxica?</td><td>Índice o ventana terapéutica</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="notaTablaFarmacodinamia"><strong>Clave:</strong> una EC<sub>50</sub> menor indica mayor potencia; un Emax mayor indica mayor eficacia. Una K<sub>D</sub> menor suele reflejar mayor afinidad.</p>
+                </article>
+
+                <article class="bloqueTablaFarmacodinamia">
+                    <h4>Principales dianas farmacológicas</h4>
+                    <p>Una diana farmacológica es la estructura con la que interactúa el fármaco para producir o modificar una respuesta biológica.</p>
+                    <div class="tablaResponsive">
+                        <table class="tablaEstudio tablaDianasFarmacodinamia">
+                            <thead><tr><th>Tipo de diana</th><th>Mecanismo general</th><th>Ejemplo</th></tr></thead>
+                            <tbody>
+                                <tr><td>Receptor</td><td>El fármaco activa, bloquea o modula una señal.</td><td>Salbutamol → receptor β₂</td></tr>
+                                <tr><td>Enzima</td><td>Inhibe o modifica una reacción catalítica.</td><td>Enalaprilato → ECA</td></tr>
+                                <tr><td>Canal iónico</td><td>Modifica el flujo de iones y la excitabilidad.</td><td>Lidocaína → canal de Na⁺</td></tr>
+                                <tr><td>Transportador</td><td>Inhibe la movilización de una sustancia.</td><td>Fluoxetina → transportador de serotonina</td></tr>
+                                <tr><td>Estructura celular</td><td>Altera un componente esencial.</td><td>Colchicina → microtúbulos</td></tr>
+                                <tr><td>Ácido nucleico o maquinaria genética</td><td>Modifica la replicación, transcripción o síntesis proteica.</td><td>Fluoroquinolonas → ADN girasa</td></tr>
+                                <tr><td>Interacción fisicoquímica</td><td>Actúa sin un receptor específico.</td><td>Antiácidos → neutralización del H⁺</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="notaTablaFarmacodinamia"><strong>Recuerda:</strong> no todos los fármacos actúan sobre receptores. Las enzimas, canales, transportadores y estructuras celulares también pueden ser dianas.</p>
+                </article>
+            </div>
+
+            <section class="seccionFlashcard" aria-labelledby="tituloFlashcardReceptores">
+                <span class="etiquetaSeccion">FLASHCARD · RECEPTORES Y SEÑALIZACIÓN</span>
+                <h4 id="tituloFlashcardReceptores">Predice la respuesta celular a partir del receptor</h4>
+                <p>Resumen visual de los tipos de receptores, sus vías de señalización y los principales segundos mensajeros.</p>
+
+                <section class="flashcardReceptores" aria-label="Resumen de receptores y señalización">
+                    <div class="encabezadoFlashcard">
+                        <span class="caraFlashcard caraFrontal">
+                            <span class="iconoFlashcard" aria-hidden="true">🧬</span>
+                            <strong>¿Qué vía activa cada receptor?</strong>
+                            <small>Relaciona el tipo de receptor con su segundo mensajero, velocidad y respuesta celular.</small>
+                        </span>
+                    </div>
+
+                    <div class="reversoFlashcard">
+                        <div class="mapaReceptores" aria-label="Mapa conceptual de receptores y señalización">
+                            <div class="nodoMapa nodoPrincipal">Ligando</div>
+                            <span class="flechaMapa" aria-hidden="true">→</span>
+                            <div class="ramasReceptores">
+                                <article>
+                                    <strong>Proteína G</strong>
+                                    <span>Gs, Gi o Gq</span>
+                                    <small>Segundos mensajeros</small>
+                                </article>
+                                <article>
+                                    <strong>Canal regulado por ligando</strong>
+                                    <span>Flujo de Na⁺, K⁺, Ca²⁺ o Cl⁻</span>
+                                    <small>Respuesta en milisegundos</small>
+                                </article>
+                                <article>
+                                    <strong>Actividad enzimática</strong>
+                                    <span>RTK, JAK/STAT u otras enzimas</span>
+                                    <small>Fosforilación y expresión génica</small>
+                                </article>
+                                <article>
+                                    <strong>Intracelular</strong>
+                                    <span>Regulación de la transcripción</span>
+                                    <small>Respuesta lenta y prolongada</small>
+                                </article>
+                            </div>
+                        </div>
+
+                        <h5>Receptores acoplados a proteína G</h5>
+                        <div class="tablaResponsive">
+                            <table class="tablaEstudio tablaProteinasG">
+                                <thead><tr><th>Proteína G</th><th>Efector</th><th>Segundo mensajero</th><th>Respuesta celular característica</th><th>Ejemplos</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Gs</strong></td><td>Activa adenilato ciclasa</td><td>↑ AMPc → PKA</td><td>Fosforilación de proteínas y activación celular según el tejido</td><td>β₁, β₂, D₁, H₂, V₂</td></tr>
+                                    <tr><td><strong>Gi</strong></td><td>Inhibe adenilato ciclasa</td><td>↓ AMPc → ↓ PKA</td><td>Reduce la actividad de proteínas dependientes de AMPc</td><td>α₂, M₂, D₂, opioides</td></tr>
+                                    <tr><td><strong>Gq</strong></td><td>Activa fosfolipasa C</td><td>IP₃ + DAG → ↑ Ca²⁺ y PKC</td><td>Contracción, secreción o activación enzimática</td><td>α₁, M₁, M₃, H₁, V₁, AT₁</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="reglaFlashcard">
+                            <strong>Regla rápida:</strong>
+                            <span><b>Gs</b> sube AMPc, <b>Gi</b> inhibe AMPc y <b>Gq</b> aumenta IP₃, DAG y Ca²⁺.</span>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <div class="leyendaCurvas" aria-label="Leyenda de los gráficos">
+                <span><i class="muestraCurva muestraAzul"></i> Fármaco o condición de referencia</span>
+                <span><i class="muestraCurva muestraCoral"></i> Fármaco o condición comparada</span>
+            </div>
+
+            <div class="rejillaCurvas">
+                <article class="tarjetaCurva">
+                    <div class="numeroCurva">1</div>
+                    <h4>Igual Emax, diferente potencia</h4>
+                    <svg class="graficoFarmacodinamia" viewBox="0 0 360 230" role="img" aria-labelledby="graficoPotenciaTitulo graficoPotenciaDesc">
+                        <title id="graficoPotenciaTitulo">Comparación de potencia entre dos agonistas</title>
+                        <desc id="graficoPotenciaDesc">Los agonistas A y B alcanzan el mismo efecto máximo. La curva A está desplazada a la izquierda y es más potente.</desc>
+                        <path class="ejeGrafico" d="M42 18V190H338M42 45H338"/>
+                        <text class="textoEje" x="12" y="32">Efecto</text><text class="textoEje" x="232" y="218">log concentración</text>
+                        <text class="marcaEmax" x="4" y="49">Emax</text>
+                        <path class="curvaGrafico curvaAzul" d="M45 188C68 188 76 176 86 142C98 96 111 56 150 47C190 40 260 45 334 45"/>
+                        <path class="curvaGrafico curvaCoral" d="M45 188C108 188 130 178 145 145C163 104 176 61 214 49C245 40 288 45 334 45"/>
+                        <text class="etiquetaAzul" x="112" y="76">A</text><text class="etiquetaCoral" x="204" y="83">B</text>
+                    </svg>
+                    <p><strong>Reconoce:</strong> ambos tienen la misma eficacia máxima; <strong>A es más potente</strong> porque necesita menor concentración.</p>
+                </article>
+
+                <article class="tarjetaCurva">
+                    <div class="numeroCurva">2</div>
+                    <h4>Diferente Emax: eficacia</h4>
+                    <svg class="graficoFarmacodinamia" viewBox="0 0 360 230" role="img" aria-labelledby="graficoEficaciaTitulo graficoEficaciaDesc">
+                        <title id="graficoEficaciaTitulo">Comparación de eficacia entre dos agonistas</title>
+                        <desc id="graficoEficaciaDesc">El agonista A alcanza un efecto máximo superior al agonista B y, por tanto, es más eficaz.</desc>
+                        <path class="ejeGrafico" d="M42 18V190H338M42 45H338M42 105H338"/>
+                        <text class="textoEje" x="12" y="32">Efecto</text><text class="textoEje" x="232" y="218">log concentración</text>
+                        <text class="marcaEmax" x="4" y="49">Emax A</text><text class="marcaEmax" x="4" y="109">Emax B</text>
+                        <path class="curvaGrafico curvaAzul" d="M45 188C78 187 91 176 104 137C119 88 133 54 169 47C210 41 274 45 334 45"/>
+                        <path class="curvaGrafico curvaCoral" d="M45 188C79 187 95 171 109 143C124 117 142 106 174 105H334"/>
+                        <text class="etiquetaAzul" x="178" y="66">A</text><text class="etiquetaCoral" x="184" y="126">B</text>
+                    </svg>
+                    <p><strong>Reconoce:</strong> el agonista A alcanza un Emax mayor y, por ello, tiene <strong>mayor eficacia</strong>.</p>
+                </article>
+
+            </div>
+
+            <div class="ideaCentral resumenCurvas">
+                <h4>Regla rápida para el examen</h4>
+                <p><strong>Movimiento horizontal = potencia.</strong> Cambio en la altura máxima = eficacia. Una curva más a la izquierda indica mayor potencia; una curva que alcanza un Emax mayor indica mayor eficacia.</p>
+            </div>
+        </section>
+
+        <section id="materialAntimicrobianos" class="materialFarmacologia" aria-labelledby="tituloAntimicrobianos" style="display:none;">
+            <button id="btnVolverCatalogoMaterial" class="enlaceVolver" type="button">← Volver a materiales</button>
+            <span class="etiquetaSeccion">FARMACOLOGÍA · ANTIMICROBIANOS</span>
+            <h3 id="tituloAntimicrobianos">Inhibidores de la pared bacteriana</h3>
+            <p class="descripcionMaterial">Tabla de repaso con grupo farmacológico, fármaco prototipo, diana molecular, mecanismo de acción y cambios producidos en la bacteria.</p>
+
+            <div class="tablaResponsive">
+                <table class="tablaEstudio">
+                    <thead>
+                        <tr>
+                            <th>Grupo farmacológico</th>
+                            <th>Fármaco prototipo</th>
+                            <th>Diana molecular</th>
+                            <th>Mecanismo de acción</th>
+                            <th>Cambios bioquímicos o fisiológicos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Penicilinas (β-lactámicos)</td>
+                            <td>Penicilina G</td>
+                            <td>Proteínas fijadoras de penicilina (PBP), principalmente transpeptidasas</td>
+                            <td>Se une covalentemente a las PBP e inhibe la transpeptidación o entrecruzamiento del peptidoglucano.</td>
+                            <td>Pared débil e inestable; activación o predominio de autolisinas; pérdida de integridad osmótica y lisis bacteriana. Efecto bactericida, especialmente durante el crecimiento.</td>
+                        </tr>
+                        <tr>
+                            <td>Cefalosporinas (β-lactámicos)</td>
+                            <td>Ceftriaxona</td>
+                            <td>PBP/transpeptidasas</td>
+                            <td>Inhibe la etapa final de entrecruzamiento del peptidoglucano.</td>
+                            <td>Formación de una pared defectuosa, alteraciones morfológicas, detención del crecimiento y lisis osmótica.</td>
+                        </tr>
+                        <tr>
+                            <td>Carbapenémicos (β-lactámicos)</td>
+                            <td>Imipenem</td>
+                            <td>Varias PBP bacterianas</td>
+                            <td>Acila e inactiva PBP esenciales, bloqueando la transpeptidación del peptidoglucano.</td>
+                            <td>Inhibición rápida de la síntesis de pared, pérdida de rigidez y muerte bacteriana por lisis.</td>
+                        </tr>
+                        <tr>
+                            <td>Monobactámicos (β-lactámicos)</td>
+                            <td>Aztreonam</td>
+                            <td>Principalmente PBP-3 de bacterias gramnegativas</td>
+                            <td>Impide el entrecruzamiento del peptidoglucano y altera la formación del tabique durante la división bacteriana.</td>
+                            <td>Formación de bacterias filamentosas, detención de la división celular y posterior lisis.</td>
+                        </tr>
+                        <tr>
+                            <td>Glucopéptidos</td>
+                            <td>Vancomicina</td>
+                            <td>Extremo terminal D-Ala–D-Ala del precursor lipídico II</td>
+                            <td>Se une al precursor del peptidoglucano y bloquea por impedimento estérico la transglucosilación y la transpeptidación.</td>
+                            <td>Disminuye la elongación y el entrecruzamiento del peptidoglucano; la pared pierde estabilidad y ocurre lisis bacteriana.</td>
+                        </tr>
+                        <tr>
+                            <td>Fosfonatos</td>
+                            <td>Fosfomicina</td>
+                            <td>Enzima MurA: UDP-N-acetilglucosamina enolpiruvil-transferasa</td>
+                            <td>Inactiva irreversiblemente MurA y bloquea una etapa citoplasmática temprana de la síntesis de peptidoglucano.</td>
+                            <td>Disminuye la formación de UDP-N-acetilmurámico y de los precursores posteriores; se detiene la construcción de la pared y se produce muerte bacteriana.</td>
+                        </tr>
+                        <tr>
+                            <td>Análogo de D-alanina</td>
+                            <td>D-cicloserina</td>
+                            <td>Alanina racemasa (Alr) y D-Ala–D-Ala ligasa (Ddl)</td>
+                            <td>Compite con la D-alanina e inhibe la producción de D-Ala y del dipéptido D-Ala–D-Ala.</td>
+                            <td>Disminuyen los pentapéptidos funcionales del peptidoglucano; falla el entrecruzamiento y la pared se vuelve osmóticamente inestable.</td>
+                        </tr>
+                        <tr>
+                            <td>Polipéptidos inhibidores de pared</td>
+                            <td>Bacitracina</td>
+                            <td>Undecaprenil-pirofosfato o bactoprenol-pirofosfato, transportador lipídico de precursores</td>
+                            <td>Impide la desfosforilación y el reciclaje del transportador lipídico que lleva las unidades de peptidoglucano a través de la membrana.</td>
+                            <td>Se acumula el transportador inactivo, disminuye el traslado de precursores y se interrumpe la expansión de la pared; puede culminar en lisis.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <aside class="ideaCentral">
+                <h4>💡 Idea integradora</h4>
+                <p>Todos estos antibacterianos reducen la síntesis o el ensamblaje del peptidoglucano, pero actúan en etapas diferentes:</p>
+                <p><strong>Formación de precursores → transporte por membrana → polimerización → entrecruzamiento</strong></p>
+                <ul>
+                    <li>Fosfomicina y D-cicloserina: formación citoplasmática de precursores.</li>
+                    <li>Bacitracina: transporte y reciclaje del portador lipídico.</li>
+                    <li>Vancomicina: incorporación y polimerización del precursor.</li>
+                    <li>β-lactámicos: entrecruzamiento final del peptidoglucano.</li>
+                </ul>
+                <p>La consecuencia común es una pared incapaz de resistir la presión osmótica, sobre todo en bacterias que están creciendo y dividiéndose. La especificidad por determinadas PBP puede producir cambios morfológicos diferentes antes de la lisis.</p>
+            </aside>
+
+            <div class="fuentesMaterial">
+                <strong>Fuentes de repaso:</strong>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK7986/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf: Antimicrobial Chemotherapy</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9aa42538-c84e-4886-8d3d-a7dfded5120f" target="_blank" rel="noopener noreferrer">DailyMed: vancomicina</a>
+                <a href="https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/212271s000lbl.pdf" target="_blank" rel="noopener noreferrer">FDA: fosfomicina</a>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK536993/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf: bacitracina</a>
+            </div>
+
+            <p class="avisoMaterial">Uso educativo. Esta tabla no sustituye protocolos clínicos ni guías locales de tratamiento.</p>
+        </section>
+
+        <section id="materialMetabolismo" class="materialFarmacologia" aria-labelledby="tituloMetabolismo" style="display:none;">
+            <button id="btnVolverCatalogoMetabolismo" class="enlaceVolver" type="button">← Volver a materiales</button>
+            <span class="etiquetaSeccion">FARMACOLOGÍA · ANTIMICROBIANOS</span>
+            <h3 id="tituloMetabolismo">Inhibidores del metabolismo</h3>
+            <p class="descripcionMaterial">Antimetabolitos que interfieren principalmente con la vía bacteriana del ácido fólico.</p>
+
+            <div class="tablaResponsive">
+                <table class="tablaEstudio">
+                    <thead>
+                        <tr>
+                            <th>Grupo farmacológico</th>
+                            <th>Fármaco prototipo</th>
+                            <th>Diana molecular</th>
+                            <th>Mecanismo de acción</th>
+                            <th>Cambios bioquímicos o fisiológicos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sulfonamidas</td>
+                            <td>Sulfametoxazol</td>
+                            <td>Dihidropteroato sintasa bacteriana (DHPS)</td>
+                            <td>Actúa como análogo estructural del PABA y compite por la DHPS, bloqueando la formación de ácido dihidropteroico y posteriormente de dihidrofolato.</td>
+                            <td>Disminución del tetrahidrofolato; reducción de la síntesis de purinas, timidilato, ADN y ARN. Generalmente produce detención del crecimiento: efecto bacteriostático.</td>
+                        </tr>
+                        <tr>
+                            <td>Diaminopirimidinas</td>
+                            <td>Trimetoprima</td>
+                            <td>Dihidrofolato reductasa bacteriana (DHFR)</td>
+                            <td>Inhibe selectivamente la conversión de dihidrofolato en tetrahidrofolato. Posee mucha mayor afinidad por la DHFR bacteriana que por la humana.</td>
+                            <td>Agotamiento del tetrahidrofolato activo; disminución de dTMP y purinas; alteración de la replicación del ADN y de la división bacteriana. Generalmente bacteriostático cuando se utiliza solo.</td>
+                        </tr>
+                        <tr>
+                            <td>Combinación antifolato</td>
+                            <td>Trimetoprima–sulfametoxazol (cotrimoxazol)</td>
+                            <td>DHPS y DHFR</td>
+                            <td>Produce un bloqueo secuencial: el sulfametoxazol impide formar dihidrofolato y la trimetoprima impide convertirlo en tetrahidrofolato.</td>
+                            <td>Reducción intensa del folato bacteriano y de la síntesis de nucleótidos; efecto sinérgico, frecuentemente bactericida frente a microorganismos susceptibles.</td>
+                        </tr>
+                        <tr>
+                            <td>Sulfonas</td>
+                            <td>Dapsona</td>
+                            <td>Dihidropteroato sintasa (DHPS)</td>
+                            <td>Compite con el PABA e inhibe la síntesis microbiana de dihidrofolato. Su acción antimicrobiana es semejante a la de las sulfonamidas.</td>
+                            <td>Disminución del folato y del timidilato; reducción de la síntesis de ADN y detención de la multiplicación. Es principalmente bacteriostática y destaca en el tratamiento de la lepra.</td>
+                        </tr>
+                        <tr>
+                            <td>Antituberculoso antifolato</td>
+                            <td>Ácido paraaminosalicílico (PAS)</td>
+                            <td>Enzimas de la vía del folato de Mycobacterium tuberculosis, especialmente DHFR después de su activación</td>
+                            <td>Actúa como análogo del PABA y como profármaco. La vía micobacteriana lo transforma en metabolitos antifolato que interfieren con la DHFR y otras etapas dependientes del folato.</td>
+                            <td>Disminución de tetrahidrofolato, purinas y timidilato; alteración de la síntesis de ADN, ARN y algunos aminoácidos. Produce inhibición bacteriostática del crecimiento micobacteriano.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <aside class="ideaCentral">
+                <h4>🧠 Secuencia metabólica para memorizar</h4>
+                <div class="secuenciaMetabolica">PABA
+  ↓  DHPS ← inhibida por sulfonamidas y dapsona
+Ácido dihidropteroico
+  ↓
+Dihidrofolato
+  ↓  DHFR ← inhibida por trimetoprima
+Tetrahidrofolato
+  ↓
+Purinas + timidilato
+  ↓
+ADN, ARN y división celular</div>
+                <p>El cotrimoxazol actúa en <strong>dos pasos consecutivos</strong>, por eso su efecto antimicrobiano es mayor que el de sus componentes por separado:</p>
+                <p><strong>Sulfametoxazol → DHPS | Trimetoprima → DHFR</strong></p>
+                <p>La reducción de tetrahidrofolato afecta también reacciones de transferencia de unidades de un carbono necesarias para producir determinados aminoácidos y otros componentes celulares.</p>
+            </aside>
+
+            <div class="fuentesMaterial">
+                <strong>Fuentes de repaso:</strong>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK7986/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf: sulfonamidas y trimetoprima</a>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK513232/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf: cotrimoxazol</a>
+                <a href="https://www.cancer.gov/publications/dictionaries/cancer-drug/def/dapsone" target="_blank" rel="noopener noreferrer">National Cancer Institute: dapsona</a>
+                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5395025/" target="_blank" rel="noopener noreferrer">Estudio del mecanismo del PAS</a>
+            </div>
+
+            <p class="avisoMaterial">Uso educativo. Esta tabla no sustituye protocolos clínicos ni guías locales de tratamiento.</p>
+        </section>
+
+<section id="materialAntiarritmicos" class="materialFarmacologia" aria-labelledby="tituloAntiarritmicos" style="display:none;">
+            <button id="btnVolverCatalogoAntiarritmicos" class="enlaceVolver" type="button">← Volver a materiales</button>
+            <span class="etiquetaSeccion">FARMACOLOGÍA · CARDIOVASCULAR</span>
+            <h3 id="tituloAntiarritmicos">Fármacos antiarrítmicos</h3>
+            <p class="descripcionMaterial">La clasificación de Vaughan–Williams se basa en el canal o receptor predominante que bloquea cada fármaco.</p>
+
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaAntiarritmicos">
+                    <thead><tr><th>Clase o grupo</th><th>Fármaco prototipo</th><th>Diana molecular</th><th>Cambios electrofisiológicos</th><th>Efecto típico en ECG</th><th>Usos característicos</th><th>Reacciones adversas y claves</th></tr></thead>
+                    <tbody>
+                        <tr><td>IA: bloqueo moderado de Na⁺ y K⁺</td><td>Procainamida</td><td>Canales rápidos de Na⁺ y K⁺</td><td>↓ fase 0 y conducción; ↑ potencial de acción y refractariedad.</td><td>↑ QRS y ↑ QT</td><td>Arritmias auriculares y ventriculares; algunas taquicardias de complejo ancho y FA con preexcitación.</td><td>Hipotensión, torsades y síndrome similar al lupus. NAPA prolonga la repolarización.</td></tr>
+                        <tr><td>IA</td><td>Quinidina</td><td>Canales de Na⁺ y K⁺; efecto antimuscarínico</td><td>↓ conducción y ↑ repolarización; puede aumentar inicialmente conducción AV.</td><td>↑ QRS y ↑ QT</td><td>Uso limitado y muy seleccionado.</td><td>Cinconismo, diarrea, trombocitopenia y torsades.</td></tr>
+                        <tr><td>IA</td><td>Disopiramida</td><td>Canales de Na⁺ y K⁺; receptores muscarínicos</td><td>↑ repolarización; potente inotropismo negativo.</td><td>↑ QRS y ↑ QT</td><td>Uso seleccionado; algunas formas de miocardiopatía hipertrófica obstructiva.</td><td>Retención urinaria, boca seca, glaucoma, IC y torsades.</td></tr>
+                        <tr><td>IB: bloqueo débil de Na⁺</td><td>Lidocaína</td><td>Canales de Na⁺ abiertos o inactivados, sobre todo en tejido ventricular isquémico</td><td>Acorta repolarización y potencial de acción; disociación rápida.</td><td>QRS casi sin cambios; QT normal o ligeramente ↓</td><td>Arritmias ventriculares agudas asociadas a isquemia o infarto.</td><td>Parestesias, confusión y convulsiones. Administración IV.</td></tr>
+                        <tr><td>IB</td><td>Mexiletina</td><td>Canales rápidos de Na⁺</td><td>Efecto semejante a lidocaína por vía oral.</td><td>QT normal o ligeramente ↓</td><td>Arritmias ventriculares crónicas seleccionadas; algunos QT largo.</td><td>Náuseas, temblor, ataxia y efectos neurológicos.</td></tr>
+                        <tr><td>IC: bloqueo intenso de Na⁺</td><td>Flecainida</td><td>Canales rápidos de Na⁺</td><td>↓ marcada de fase 0 y conducción; poco efecto sobre repolarización.</td><td>↑ marcado del QRS; PR puede ↑</td><td>Control del ritmo en FA y otras supraventriculares sin cardiopatía estructural significativa.</td><td>Proarrítmica; bloqueo AV y flutter 1:1. Evitar en cardiopatía isquémica o estructural.</td></tr>
+                        <tr><td>IC</td><td>Propafenona</td><td>Canales de Na⁺; β-bloqueo débil</td><td>↓ intensa de conducción auricular, ventricular y His–Purkinje.</td><td>↑ QRS y PR</td><td>Indicaciones semejantes a flecainida.</td><td>Proarritmia, bradicardia, sabor metálico y broncoespasmo.</td></tr>
+                        <tr><td>II: β-bloqueadores</td><td>Metoprolol, esmolol</td><td>Receptores β₁-adrenérgicos</td><td>↓ AMPc y entrada de Ca²⁺; ↓ automatismo SA y conducción AV.</td><td>↓ frecuencia y ↑ PR</td><td>Control de frecuencia en FA/flutter, taquicardias dependientes de nodo AV y arritmias por catecolaminas.</td><td>Bradicardia, bloqueo AV, hipotensión, fatiga e IC aguda; los no selectivos pueden causar broncoespasmo.</td></tr>
+                        <tr><td>III: bloqueo de K⁺ multicanal</td><td>Amiodarona</td><td>K⁺; también Na⁺, Ca²⁺ y receptores β</td><td>↑ potencial de acción y refractariedad; ↓ automatismo y conducción AV.</td><td>↑ QT, PR y a veces QRS; bradicardia</td><td>Arritmias auriculares/ventriculares, FA seleccionada, FV o TV sin pulso refractaria.</td><td>Toxicidad pulmonar, tiroidea, hepática, ocular, cutánea y neurológica; muchas interacciones.</td></tr>
+                        <tr><td>III con β-bloqueo</td><td>Sotalol</td><td>Canales de K⁺ y receptores β</td><td>↑ repolarización y ↓ actividad simpática.</td><td>↑ QT, ↑ PR y bradicardia</td><td>Mantenimiento del ritmo en FA y algunas arritmias ventriculares.</td><td>Torsades, bradicardia y broncoespasmo; ajustar por función renal y vigilar QT.</td></tr>
+                        <tr><td>III selectivo</td><td>Dofetilida</td><td>Corriente rectificadora rápida de K⁺, IKr</td><td>↑ potencial de acción y refractariedad sin disminuir mucho conducción.</td><td>↑ QT</td><td>Mantenimiento o restauración del ritmo en FA/flutter, incluso con IC seleccionada.</td><td>Torsades; vigilar QT, función renal e interacciones.</td></tr>
+                        <tr><td>III selectivo</td><td>Ibutilida</td><td>Corrientes de K⁺ y ↑ corriente lenta de Na⁺</td><td>↑ repolarización auricular y ventricular.</td><td>↑ QT</td><td>Cardioversión farmacológica IV de FA/flutter reciente.</td><td>Torsades; requiere monitorización electrocardiográfica.</td></tr>
+                        <tr><td>III multicanal</td><td>Dronedarona</td><td>K⁺, Na⁺, Ca²⁺ y receptores β</td><td>↓ automatismo y ↑ refractariedad; no contiene yodo.</td><td>↑ QT y PR; bradicardia</td><td>Mantenimiento del ritmo en FA paroxística o persistente seleccionada.</td><td>Menor toxicidad tiroidea que amiodarona; lesión hepática. Contraindicada en FA permanente e IC descompensada/grave.</td></tr>
+                        <tr><td>IV: bloqueador de Ca²⁺ no dihidropiridínico</td><td>Verapamilo</td><td>Canales de Ca²⁺ tipo L, sobre todo nodos SA y AV</td><td>↓ fase 0 nodal; ↓ conducción AV y ↑ refractariedad.</td><td>↑ PR y ↓ frecuencia</td><td>Taquicardias supraventriculares y control de frecuencia en FA/flutter.</td><td>Bradicardia, bloqueo AV, hipotensión, estreñimiento e inotropismo negativo. Evitar en IC-FEr y FA con preexcitación.</td></tr>
+                        <tr><td>IV</td><td>Diltiazem</td><td>Canales de Ca²⁺ tipo L</td><td>Efectos nodales semejantes, con menor inotropismo negativo.</td><td>↑ PR y ↓ frecuencia</td><td>Control de frecuencia en FA/flutter y algunas TSV.</td><td>Bradicardia, hipotensión, edema y bloqueo AV. Evitar en IC sistólica significativa.</td></tr>
+                        <tr><td>No clasificado: nucleósido</td><td>Adenosina</td><td>Receptores A₁ del nodo AV</td><td>Abre K⁺, ↓ AMPc y entrada de Ca²⁺; bloqueo AV muy breve.</td><td>Pausa o bloqueo AV transitorio</td><td>Terminación de TSV regular dependiente de nodo AV; ayuda diagnóstica.</td><td>Rubor, disnea, dolor torácico y sensación de muerte inminente. Vida media &lt;10 s; cafeína/teofilina antagonizan.</td></tr>
+                        <tr><td>No clasificado: glucósido cardiaco</td><td>Digoxina</td><td>Na⁺/K⁺-ATPasa y sistema vagal</td><td>↑ Ca²⁺ intracelular y contractilidad; ↑ tono vagal y ↓ conducción AV.</td><td>↑ PR, ↓ frecuencia; ST en cubeta</td><td>Control de frecuencia en FA, sobre todo con IC seleccionada.</td><td>Náuseas, cambios visuales, confusión y arritmias. Hipopotasemia favorece toxicidad; evitar bloqueo nodal aislado en FA con preexcitación.</td></tr>
+                        <tr><td>Electrolito antiarrítmico</td><td>Sulfato de magnesio</td><td>Corrientes de K⁺ y Ca²⁺; estabiliza membrana</td><td>↓ posdespolarizaciones tempranas y estabiliza repolarización.</td><td>Puede normalizar QT inestable</td><td>Tratamiento farmacológico de elección en torsades, aun con magnesio normal.</td><td>Hipotensión, debilidad, hiporreflexia y depresión respiratoria a concentraciones altas.</td></tr>
+                        <tr><td>Antimuscarínico para bradicardia</td><td>Atropina</td><td>Receptores muscarínicos M₂</td><td>↓ tono vagal sobre SA/AV, ↑ frecuencia y conducción.</td><td>↓ PR y ↑ frecuencia</td><td>Bradicardia sintomática, principalmente nodal.</td><td>Boca seca, visión borrosa, retención urinaria, confusión y taquicardia; puede ser poco eficaz en bloqueos infranodales avanzados.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <aside class="ideaCentral">
+                <h4>⚡ Regla mnemotécnica Vaughan–Williams</h4>
+                <ul>
+                    <li>Clase I: <strong>Na⁺</strong> → afecta principalmente la conducción y el <strong>QRS</strong>.</li>
+                    <li>Clase II: <strong>β</strong> → disminuye automatismo y conducción AV.</li>
+                    <li>Clase III: <strong>K⁺</strong> → prolonga repolarización y <strong>QT</strong>.</li>
+                    <li>Clase IV: <strong>Ca²⁺</strong> → frena el nodo AV y prolonga <strong>PR</strong>.</li>
+                </ul>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>🔎 Reglas rápidas para interpretar preguntas</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaDiferencias">
+                        <thead><tr><th>Hallazgo o situación</th><th>Asociación principal</th></tr></thead>
+                        <tbody>
+                            <tr><td>Prolongación del QRS</td><td>Bloqueo de Na⁺, especialmente clase IC.</td></tr>
+                            <tr><td>Prolongación del QT</td><td>Clases IA y III.</td></tr>
+                            <tr><td>Prolongación del PR</td><td>Bloqueo AV: clases II y IV, digoxina o adenosina.</td></tr>
+                            <tr><td>Torsades de pointes</td><td>QT prolongado; riesgo con IA, sotalol, dofetilida e ibutilida.</td></tr>
+                            <tr><td>Tratamiento farmacológico de torsades</td><td>Sulfato de magnesio.</td></tr>
+                            <tr><td>TSV regular dependiente del nodo AV; vida media &lt;10 s</td><td>Adenosina.</td></tr>
+                            <tr><td>Arritmia ventricular tras isquemia o infarto</td><td>Lidocaína.</td></tr>
+                            <tr><td>FA sin cardiopatía estructural significativa</td><td>Flecainida o propafenona pueden ser opciones.</td></tr>
+                            <tr><td>Infarto previo o cardiopatía estructural significativa</td><td>Evitar generalmente clase IC.</td></tr>
+                            <tr><td>FA más IC con fracción de eyección reducida</td><td>Amiodarona o dofetilida pueden considerarse para mantener ritmo.</td></tr>
+                            <tr><td>Toxicidad pulmonar, tiroidea y hepática</td><td>Amiodarona.</td></tr>
+                            <tr><td>Síndrome similar al lupus / cinconismo</td><td>Procainamida / quinidina.</td></tr>
+                            <tr><td>Efectos anticolinérgicos e inotropismo negativo intenso</td><td>Disopiramida.</td></tr>
+                            <tr><td>Arritmias con alteraciones visuales y gastrointestinales</td><td>Toxicidad por digoxina.</td></tr>
+                            <tr><td>FA con vía accesoria o WPW</td><td>Evitar bloqueadores aislados del nodo AV; requiere manejo especializado.</td></tr>
+                            <tr><td>Arritmia con inestabilidad hemodinámica</td><td>Cardioversión sincronizada; no retrasarla por tratamiento farmacológico.</td></tr>
+                            <tr><td>FV o TV sin pulso</td><td>Desfibrilación y reanimación; los fármacos son complementarios.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <div class="fuentesMaterial">
+                <strong>Fuentes de repaso:</strong>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK482322/" target="_blank" rel="noopener noreferrer">NCBI: clasificación de antiarrítmicos</a>
+                <a href="https://www.ahajournals.org/doi/10.1161/CIR.0000000000001193" target="_blank" rel="noopener noreferrer">Guía ACC/AHA/ACCP/HRS sobre fibrilación auricular</a>
+                <a href="https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support" target="_blank" rel="noopener noreferrer">AHA: soporte vital avanzado</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=996fc80e-b680-31f1-e053-2995a90aa0f1" target="_blank" rel="noopener noreferrer">DailyMed: adenosina</a>
+            </div>
+            <p class="avisoMaterial">Uso educativo. Los antiarrítmicos pueden causar nuevas arritmias; su uso clínico requiere selección individual y monitorización.</p>
+        </section>
+
+        <section id="materialAntiagregantes" class="materialFarmacologia" aria-labelledby="tituloAntiagregantes" style="display:none;">
+            <button id="btnVolverCatalogoAntiagregantes" class="enlaceVolver" type="button">← Volver a materiales</button>
+            <span class="etiquetaSeccion">FARMACOLOGÍA · CARDIOVASCULAR</span>
+            <h3 id="tituloAntiagregantes">Fármacos antiagregantes plaquetarios</h3>
+            <p class="descripcionMaterial">Los antiagregantes disminuyen la formación de trombos arteriales ricos en plaquetas. El sangrado es el riesgo común de todos los grupos.</p>
+
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaAntiagregantes">
+                    <thead><tr><th>Grupo farmacológico</th><th>Fármaco prototipo</th><th>Mecanismo de acción</th><th>Datos relevantes para el estudio</th><th>Efecto adverso más frecuente o clave</th></tr></thead>
+                    <tbody>
+                        <tr><td>Inhibidor de COX-1</td><td>Ácido acetilsalicílico (aspirina, AAS)</td><td>Acetila e inhibe irreversiblemente COX-1 plaquetaria; ↓ tromboxano A₂ (TXA₂).</td><td>La plaqueta no forma COX-1 nueva: efecto durante 7–10 días. Prevención secundaria cardiovascular y doble antiagregación.</td><td>Dispepsia/irritación gastrointestinal; el efecto clínico más importante es sangrado, especialmente gastrointestinal.</td></tr>
+                        <tr><td>Tienopiridina inhibidora de P2Y₁₂</td><td>Clopidogrel</td><td>Profármaco activado principalmente por CYP2C19; bloquea irreversiblemente P2Y₁₂ e impide activar GP IIb/IIIa.</td><td>Inicio menos rápido y respuesta variable. Metabolizadores lentos CYP2C19 responden menos; omeprazol y esomeprazol reducen activación.</td><td>Sangrado; rara vez púrpura trombótica trombocitopénica (PTT).</td></tr>
+                        <tr><td>Tienopiridina inhibidora de P2Y₁₂</td><td>Prasugrel</td><td>Profármaco que bloquea irreversiblemente P2Y₁₂ tras activación metabólica.</td><td>Más rápido, potente y uniforme que clopidogrel; en SCA tratado con ICP. Contraindicado con ACV/AIT previo; precaución si ≥75 años o &lt;60 kg.</td><td>Sangrado, potencialmente grave o mortal.</td></tr>
+                        <tr><td>Tienopiridina inhibidora de P2Y₁₂</td><td>Ticlopidina</td><td>Profármaco que bloquea irreversiblemente P2Y₁₂.</td><td>Fármaco antiguo, sustituido por opciones más seguras; requiere control hematológico si se utiliza.</td><td>Diarrea; neutropenia, agranulocitosis y PTT.</td></tr>
+                        <tr><td>Ciclopentil-triazolo-pirimidina</td><td>Ticagrelor</td><td>Antagonista directo, alostérico y reversible de P2Y₁₂; no requiere activación metabólica.</td><td>Inicio rápido; se administra dos veces al día y puede aumentar adenosina extracelular. Se combina con AAS 75–100 mg/día.</td><td>Sangrado y disnea; también bradicardia transitoria e hiperuricemia.</td></tr>
+                        <tr><td>Inhibidor IV de P2Y₁₂</td><td>Cangrelor</td><td>Bloquea directa y reversiblemente P2Y₁₂.</td><td>IV, inicio casi inmediato y efecto desaparece rápido tras interrumpir infusión; útil durante ICP si no se puede usar un inhibidor oral.</td><td>Sangrado; también disnea.</td></tr>
+                        <tr><td>Inhibidor de GP IIb/IIIa</td><td>Abciximab</td><td>Anticuerpo monoclonal que bloquea GP IIb/IIIa y la unión de fibrinógeno: vía final común de agregación.</td><td>IV, efecto intenso y relativamente prolongado; se reserva para situaciones seleccionadas durante ICP.</td><td>Sangrado; trombocitopenia aguda característica.</td></tr>
+                        <tr><td>Inhibidor de GP IIb/IIIa</td><td>Eptifibatida</td><td>Péptido cíclico que inhibe reversiblemente GP IIb/IIIa e impide unión de fibrinógeno y factor von Willebrand.</td><td>IV, efecto más breve que abciximab; eliminación renal, requiere ajuste por función renal.</td><td>Sangrado.</td></tr>
+                        <tr><td>Inhibidor de GP IIb/IIIa</td><td>Tirofibán</td><td>Molécula no peptídica que inhibe reversiblemente GP IIb/IIIa.</td><td>IV, acción rápida y corta; uso seleccionado en SCA o ICP. Eliminación principalmente renal.</td><td>Sangrado y trombocitopenia.</td></tr>
+                        <tr><td>Inhibidor de fosfodiesterasa</td><td>Dipiridamol</td><td>Inhibe fosfodiesterasas y recaptación de adenosina: ↑ AMPc plaquetario y vasodilatación.</td><td>Se usa con aspirina en prevención secundaria de ciertos eventos cerebrovasculares.</td><td>Cefalea; también mareo e hipotensión.</td></tr>
+                        <tr><td>Inhibidor selectivo de PDE-3</td><td>Cilostazol</td><td>Inhibe PDE-3: ↑ AMPc en plaquetas y músculo vascular, con antiagregación y vasodilatación.</td><td>Mejora la distancia de marcha en claudicación intermitente. Contraindicado en insuficiencia cardiaca de cualquier gravedad.</td><td>Cefalea; diarrea y palpitaciones.</td></tr>
+                        <tr><td>Antagonista del receptor de trombina</td><td>Vorapaxar</td><td>Antagoniza PAR-1, receptor por el cual trombina activa plaquetas.</td><td>Uso muy seleccionado tras infarto o enfermedad arterial periférica. Vida media muy prolongada; contraindicado en ACV, AIT o hemorragia intracraneal previos.</td><td>Sangrado, incluido riesgo de hemorragia intracraneal.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <aside class="ideaCentral">
+                <h4>Comparación de los inhibidores P2Y₁₂</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaDiferencias">
+                        <thead><tr><th>Fármaco</th><th>Profármaco</th><th>Unión / vía</th><th>Clave diferenciadora</th></tr></thead>
+                        <tbody>
+                            <tr><td>Clopidogrel</td><td>Sí</td><td>Irreversible · oral</td><td>Depende de CYP2C19; respuesta variable.</td></tr>
+                            <tr><td>Prasugrel</td><td>Sí</td><td>Irreversible · oral</td><td>Más potente; contraindicado en ACV/AIT previo.</td></tr>
+                            <tr><td>Ticagrelor</td><td>No</td><td>Reversible · oral</td><td>Disnea; administración dos veces al día.</td></tr>
+                            <tr><td>Cangrelor</td><td>No</td><td>Reversible · IV</td><td>Inicio y terminación extremadamente rápidos.</td></tr>
+                            <tr><td>Ticlopidina</td><td>Sí</td><td>Irreversible · oral</td><td>Neutropenia y PTT; casi no se utiliza.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>🔎 Claves para responder preguntas</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaDiferencias">
+                        <thead><tr><th>Si la pregunta menciona…</th><th>Respuesta más probable</th></tr></thead>
+                        <tbody>
+                            <tr><td>Inhibición irreversible de COX-1 o ↓ TXA₂</td><td>Aspirina.</td></tr>
+                            <tr><td>Activación por CYP2C19 / metabolizador lento</td><td>Clopidogrel / menor respuesta a clopidogrel.</td></tr>
+                            <tr><td>Antecedente de ACV o AIT</td><td>Evitar prasugrel y vorapaxar.</td></tr>
+                            <tr><td>Disnea con antiagregante</td><td>Ticagrelor.</td></tr>
+                            <tr><td>P2Y₁₂ directo, reversible e IV</td><td>Cangrelor.</td></tr>
+                            <tr><td>Bloqueo de la vía final común de agregación</td><td>Inhibidores de GP IIb/IIIa.</td></tr>
+                            <tr><td>Trombocitopenia aguda tras ICP</td><td>Abciximab u otro inhibidor de GP IIb/IIIa.</td></tr>
+                            <tr><td>Cefalea por vasodilatación</td><td>Dipiridamol o cilostazol.</td></tr>
+                            <tr><td>Claudicación intermitente / insuficiencia cardiaca</td><td>Cilostazol / cilostazol está contraindicado.</td></tr>
+                            <tr><td>Neutropenia o PTT</td><td>Ticlopidina.</td></tr>
+                            <tr><td>Receptor PAR-1 activado por trombina</td><td>Vorapaxar.</td></tr>
+                            <tr><td>Complicación común a todos los grupos</td><td>Sangrado.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>Conceptos integradores</h4>
+                <ul>
+                    <li>Aspirina bloquea la vía del <strong>tromboxano A₂</strong>.</li>
+                    <li>Clopidogrel, prasugrel, ticagrelor y cangrelor bloquean la vía <strong>ADP–P2Y₁₂</strong>.</li>
+                    <li>Abciximab, eptifibatida y tirofibán bloquean <strong>GP IIb/IIIa</strong>, la vía final común que permite al fibrinógeno unir plaquetas.</li>
+                    <li>La doble antiagregación suele combinar <strong>aspirina + un inhibidor P2Y₁₂</strong>.</li>
+                    <li>El TP y TTPa pueden ser normales porque no miden directamente la función plaquetaria.</li>
+                </ul>
+            </aside>
+
+            <div class="fuentesMaterial">
+                <strong>Fuentes de repaso:</strong>
+                <a href="https://www.heart.org/en/health-topics/heart-attack/treatment-of-a-heart-attack/aspirin-and-heart-disease" target="_blank" rel="noopener noreferrer">American Heart Association: aspirina y doble antiagregación</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=de8b0b67-eb25-4684-83b5-7ad785314227" target="_blank" rel="noopener noreferrer">DailyMed: clopidogrel</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=32ebf046-73e4-b11f-e063-6294a90a5bf4" target="_blank" rel="noopener noreferrer">DailyMed: ticagrelor</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=35aa7f3e-bbd8-4eae-b61f-29d1abca2224" target="_blank" rel="noopener noreferrer">DailyMed: prasugrel</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=77e77eaf-5556-43ac-844e-c0e29f02fe07" target="_blank" rel="noopener noreferrer">DailyMed: cilostazol</a>
+            </div>
+            <p class="avisoMaterial">Uso educativo. Los antiagregantes requieren una valoración individual del riesgo trombótico y hemorrágico; no sustituyen guías ni indicaciones clínicas.</p>
+        </section>
+
+        <section id="materialAnticoagulantes" class="materialFarmacologia" aria-labelledby="tituloAnticoagulantes" style="display:none;">
+            <button id="btnVolverCatalogoAnticoagulantes" class="enlaceVolver" type="button">← Volver a materiales</button>
+            <span class="etiquetaSeccion">FARMACOLOGÍA · CARDIOVASCULAR</span>
+            <h3 id="tituloAnticoagulantes">Anticoagulantes orales y parenterales</h3>
+            <p class="descripcionMaterial">Estos fármacos reducen la formación de fibrina al actuar sobre la cascada de coagulación. Previenen la formación o extensión del trombo, pero no son fibrinolíticos.</p>
+
+            <h4 class="subtituloMaterial">Anticoagulantes orales</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaAnticoagulantes">
+                    <thead><tr><th>Grupo farmacológico</th><th>Fármaco</th><th>Mecanismo de acción</th><th>Datos relevantes</th><th>Efecto adverso más frecuente o clave</th></tr></thead>
+                    <tbody>
+                        <tr><td>Antagonista de vitamina K</td><td>Warfarina</td><td>Inhibe VKORC1: ↓ γ-carboxilación y actividad de II, VII, IX, X, proteína C y S.</td><td>Inicio y desaparición lentos; monitorizar TP/INR. Interacciones farmacológicas y con vitamina K. Al inicio ↓ primero proteína C: puede requerir puente con heparina. Referencia en válvulas mecánicas y valvulopatías seleccionadas.</td><td>Sangrado; necrosis cutánea, síndrome del dedo púrpura y teratogenicidad.</td></tr>
+                        <tr><td>Inhibidor directo de trombina (IIa)</td><td>Dabigatrán etexilato</td><td>Profármaco que inhibe directa, competitiva y reversiblemente trombina libre y unida al coágulo; impide fibrinógeno → fibrina.</td><td>ACOD oral, eliminación predominantemente renal. No requiere INR rutinario; cápsulas sensibles a humedad. Antídoto: idarucizumab.</td><td>Dispepsia y síntomas gastrointestinales; sangrado.</td></tr>
+                        <tr><td>Inhibidor directo de factor Xa</td><td>Apixabán</td><td>Inhibe directa y reversiblemente Xa libre y unido al coágulo, ↓ generación de trombina.</td><td>ACOD oral dos veces al día. Menor dependencia renal que dabigatrán; valorar función renal, edad, peso e interacciones. Sin INR rutinario.</td><td>Sangrado.</td></tr>
+                        <tr><td>Inhibidor directo de factor Xa</td><td>Rivaroxabán</td><td>Inhibe directa y reversiblemente Xa, ↓ formación de trombina y fibrina.</td><td>ACOD oral. Algunas dosis terapéuticas se toman con alimentos. Eliminación renal/hepática e interacciones con CYP3A4 y P-glicoproteína.</td><td>Sangrado.</td></tr>
+                        <tr><td>Inhibidor directo de factor Xa</td><td>Edoxabán</td><td>Inhibe directa, selectiva y reversiblemente Xa.</td><td>ACOD oral una vez al día, con eliminación renal importante. En algunos TEV se inicia tras varios días de anticoagulación parenteral.</td><td>Sangrado.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="subtituloMaterial">Anticoagulantes parenterales</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaAnticoagulantes">
+                    <thead><tr><th>Grupo farmacológico</th><th>Fármaco</th><th>Mecanismo de acción</th><th>Datos relevantes</th><th>Efecto adverso más frecuente o clave</th></tr></thead>
+                    <tbody>
+                        <tr><td>Heparina no fraccionada (HNF)</td><td>Heparina sódica</td><td>Se une a antitrombina y acelera inactivación de IIa, Xa y en menor grado IXa, XIa y XIIa. La cadena larga une antitrombina y trombina.</td><td>IV o SC; inicio inmediato IV y vida media corta. TTPa o anti-Xa. Antídoto: protamina. Útil si se requiere reversibilidad rápida o hay insuficiencia renal importante.</td><td>Sangrado; HIT, que paradójicamente causa trombosis.</td></tr>
+                        <tr><td>Heparina de bajo peso molecular (HBPM)</td><td>Enoxaparina</td><td>Potencia antitrombina e inhibe Xa &gt; IIa.</td><td>SC, efecto más predecible y vida media mayor que HNF. Sin monitorización rutinaria; anti-Xa en casos especiales. Eliminación renal; menor riesgo de HIT. Protamina revierte solo parcialmente.</td><td>Sangrado, hematoma y dolor en sitio de inyección.</td></tr>
+                        <tr><td>HBPM</td><td>Dalteparina</td><td>Potencia inhibición de Xa por antitrombina, con menor actividad contra IIa.</td><td>Propiedades semejantes a enoxaparina; prevención/tratamiento de TEV, incluso en determinados pacientes con cáncer.</td><td>Sangrado y reacción en sitio de inyección.</td></tr>
+                        <tr><td>Pentasacárido sintético</td><td>Fondaparinux</td><td>Se une selectivamente a antitrombina y potencia la inhibición indirecta de Xa; no inhibe trombina directamente.</td><td>SC, eliminación renal y sin monitorización rutinaria. Muy bajo riesgo de HIT; no posee antídoto específico habitual.</td><td>Sangrado.</td></tr>
+                        <tr><td>Inhibidor directo parenteral de trombina</td><td>Argatrobán</td><td>Inhibe reversiblemente trombina libre y unida al coágulo, sin requerir antitrombina.</td><td>IV; clásico en HIT. Metabolismo hepático: útil en insuficiencia renal, ajustar en insuficiencia hepática. TTPa; también eleva INR.</td><td>Sangrado.</td></tr>
+                        <tr><td>Inhibidor directo parenteral de trombina</td><td>Bivalirudina</td><td>Se une al sitio activo y exositio I de trombina, inhibiendo formación de fibrina.</td><td>IV, inicio rápido y vida media corta. Principalmente en intervenciones coronarias y alternativa en HIT. Eliminación parcialmente renal; sin antídoto específico.</td><td>Sangrado.</td></tr>
+                        <tr><td>Inhibidor directo de trombina derivado de hirudina</td><td>Desirudina</td><td>Inhibe trombina directamente e independiente de antitrombina.</td><td>SC, uso menos frecuente y eliminación predominantemente renal.</td><td>Sangrado.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <aside class="ideaCentral">
+                <h4>Comparación rápida</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaComparacionAnticoagulantes">
+                        <thead><tr><th>Característica</th><th>HNF</th><th>HBPM</th><th>Fondaparinux</th><th>Warfarina</th><th>ACOD/DOAC</th></tr></thead>
+                        <tbody>
+                            <tr><td>Vía</td><td>IV o SC</td><td>SC</td><td>SC</td><td>Oral</td><td>Oral</td></tr>
+                            <tr><td>Diana principal</td><td>IIa y Xa por antitrombina</td><td>Xa &gt; IIa por antitrombina</td><td>Xa por antitrombina</td><td>Síntesis de II, VII, IX y X</td><td>IIa o Xa directos</td></tr>
+                            <tr><td>Inicio</td><td>Inmediato IV</td><td>Rápido</td><td>Rápido</td><td>Lento</td><td>Rápido</td></tr>
+                            <tr><td>Prueba habitual</td><td>TTPa o anti-Xa</td><td>Ninguna; anti-Xa especial</td><td>Ninguna</td><td>TP/INR</td><td>Ninguna rutinaria</td></tr>
+                            <tr><td>Eliminación destacada</td><td>Reticuloendotelial y renal</td><td>Principalmente renal</td><td>Renal</td><td>Hepática</td><td>Variable, componente renal importante</td></tr>
+                            <tr><td>Antídoto</td><td>Protamina</td><td>Protamina parcial</td><td>Ninguno habitual</td><td>Vitamina K; CCP 4 factores en urgencia</td><td>Idarucizumab para dabigatrán; reversión anti-Xa según protocolo</td></tr>
+                            <tr><td>Riesgo de HIT</td><td>Mayor</td><td>Menor</td><td>Muy bajo</td><td>No</td><td>No</td></tr>
+                            <tr><td>Embarazo</td><td>Puede utilizarse</td><td>Frecuentemente preferida</td><td>Información limitada</td><td>Generalmente contraindicada</td><td>Generalmente no recomendados</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>Antídotos y reversión</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaDiferencias">
+                        <thead><tr><th>Anticoagulante</th><th>Reversión principal</th></tr></thead>
+                        <tbody>
+                            <tr><td>Heparina no fraccionada</td><td>Sulfato de protamina.</td></tr>
+                            <tr><td>Enoxaparina / HBPM</td><td>Protamina: reversión parcial.</td></tr>
+                            <tr><td>Warfarina</td><td>Vitamina K; en hemorragia grave, CCP de cuatro factores más vitamina K.</td></tr>
+                            <tr><td>Dabigatrán</td><td>Idarucizumab.</td></tr>
+                            <tr><td>Apixabán o rivaroxabán</td><td>Andexanet alfa donde esté aprobado y disponible; CCP de cuatro factores según protocolo.</td></tr>
+                            <tr><td>Argatrobán o bivalirudina</td><td>Suspender infusión y medidas de soporte; no poseen antídoto específico.</td></tr>
+                            <tr><td>Fondaparinux</td><td>Sin antídoto específico habitual; manejo especializado.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>🔎 Claves para preguntas de examen</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaDiferencias">
+                        <thead><tr><th>Si la pregunta menciona…</th><th>Pensar en…</th></tr></thead>
+                        <tbody>
+                            <tr><td>TP/INR</td><td>Warfarina.</td></tr>
+                            <tr><td>TTPa</td><td>Heparina no fraccionada o argatrobán.</td></tr>
+                            <tr><td>Antídoto: protamina</td><td>Heparina; reversión solo parcial de HBPM.</td></tr>
+                            <tr><td>Antídoto: idarucizumab</td><td>Dabigatrán.</td></tr>
+                            <tr><td>Fármaco terminado en “-xabán” / “-gatrán”</td><td>Inhibidor directo de Xa / inhibidor directo de trombina.</td></tr>
+                            <tr><td>Necrosis cutánea al iniciar tratamiento</td><td>Warfarina por descenso rápido de proteína C.</td></tr>
+                            <tr><td>Embarazo</td><td>Preferir generalmente HNF o HBPM; evitar warfarina y ACOD.</td></tr>
+                            <tr><td>Válvula cardiaca mecánica</td><td>Warfarina; los ACOD no son sustitutos apropiados.</td></tr>
+                            <tr><td>Trombocitopenia más nueva trombosis</td><td>HIT, no un simple efecto hemorrágico.</td></tr>
+                            <tr><td>HIT con insuficiencia renal / hepática</td><td>Argatrobán / bivalirudina puede considerarse según contexto y función renal.</td></tr>
+                            <tr><td>Insuficiencia renal grave y necesidad de reversión rápida</td><td>HNF suele ser ventajosa.</td></tr>
+                            <tr><td>Anticoagulante parenteral selectivo de Xa</td><td>Fondaparinux.</td></tr>
+                            <tr><td>Mayor riesgo de HIT</td><td>HNF más que HBPM.</td></tr>
+                            <tr><td>INR normal en paciente anticoagulado</td><td>No excluye efecto de un ACOD.</td></tr>
+                            <tr><td>Complicación compartida por todos</td><td>Sangrado.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>Diferencia esencial</h4>
+                <ul>
+                    <li>Los <strong>antiagregantes</strong> impiden activación o unión plaquetaria y son especialmente relevantes en trombos arteriales.</li>
+                    <li>Los <strong>anticoagulantes</strong> reducen la formación de fibrina; son fundamentales en fibrilación auricular y tromboembolismo venoso.</li>
+                    <li>En fibrilación auricular sin válvula mecánica ni estenosis mitral reumática moderada-grave, los ACOD suelen preferirse a warfarina; la elección depende de indicación, función renal/hepática, interacciones y riesgo hemorrágico.</li>
+                </ul>
+            </aside>
+
+            <div class="fuentesMaterial">
+                <strong>Fuentes de repaso:</strong>
+                <a href="https://www.ahajournals.org/doi/10.1161/CIR.0000000000001193" target="_blank" rel="noopener noreferrer">Guía ACC/AHA/ACCP/HRS sobre fibrilación auricular</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cece935c-1c0a-4949-b023-d6df3d53fbfa" target="_blank" rel="noopener noreferrer">DailyMed: heparina</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=541c9a70-adaf-4ef3-94ba-ad4e70dfa057" target="_blank" rel="noopener noreferrer">DailyMed: warfarina</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=27e95caf-7938-ef8e-e063-6394a90a6a1a" target="_blank" rel="noopener noreferrer">DailyMed: dabigatrán</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d978e06e-b758-460b-81d3-69f7a5b89b00" target="_blank" rel="noopener noreferrer">DailyMed: enoxaparina</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=d3b30c68-cf45-4b46-8ba6-72090f7ba01a&amp;version=13" target="_blank" rel="noopener noreferrer">DailyMed: fondaparinux</a>
+            </div>
+            <p class="avisoMaterial">Uso educativo. La selección y reversión de anticoagulantes depende del contexto clínico, del riesgo hemorrágico y de los protocolos locales.</p>
+        </section>
+
+        <section id="materialVasoactivos" class="materialFarmacologia" aria-labelledby="tituloVasoactivos" style="display:none;">
+            <button id="btnVolverCatalogoVasoactivos" class="enlaceVolver" type="button">← Volver a materiales</button>
+            <span class="etiquetaSeccion">FARMACOLOGÍA · CARDIOVASCULAR</span>
+            <h3 id="tituloVasoactivos">Inodilatadores e inoconstrictores</h3>
+            <p class="descripcionMaterial"><strong>Inodilatadores</strong>: aumentan contractilidad y producen vasodilatación. <strong>Inoconstrictores o inopresores</strong>: aumentan contractilidad y vasoconstricción. Los vasopresores predominantes elevan la presión principalmente por vasoconstricción.</p>
+
+            <h4 class="subtituloMaterial">Inodilatadores</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaVasoactivos">
+                    <thead><tr><th>Grupo farmacológico</th><th>Fármaco</th><th>Mecanismo de acción</th><th>Datos relevantes</th><th>Efecto adverso más frecuente o clave</th></tr></thead>
+                    <tbody>
+                        <tr><td>Agonista β₁-adrenérgico</td><td>Dobutamina</td><td>Estimula sobre todo β₁: ↑ AMPc, entrada de Ca²⁺ y contractilidad. Actividad β₂ vasodilata; α₁ menor.</td><td>↑ gasto cardiaco y ↓ moderadamente RVS. Útil en bajo gasto por disfunción miocárdica, pero puede empeorar hipotensión: combinar con noradrenalina si la PA es insuficiente. También para ecocardiografía de estrés.</td><td>Taquicardia y arritmias; hipotensión, angina y ↑ consumo miocárdico de O₂.</td></tr>
+                        <tr><td>Inhibidor de fosfodiesterasa 3</td><td>Milrinona</td><td>Inhibe PDE-3, evita degradación de AMPc. En corazón ↑ Ca²⁺ y contractilidad; en músculo vascular vasodilata.</td><td>↑ gasto cardiaco y ↓ RVS/RVP. Conserva efecto con β-bloqueo; efecto lusitrópico. Eliminación renal, se acumula en insuficiencia renal.</td><td>Arritmias ventriculares; hipotensión y cefalea.</td></tr>
+                        <tr><td>Sensibilizador de Ca²⁺ y abridor KATP</td><td>Levosimendán</td><td>Sensibiliza troponina C al Ca²⁺ y abre canales KATP vasculares.</td><td>Inodilatador para IC aguda seleccionada, según país y disponibilidad; metabolitos activos prolongados.</td><td>Hipotensión y cefalea; taquicardia, arritmias e hipopotasemia.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="subtituloMaterial">Inoconstrictores o inopresores</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaVasoactivos">
+                    <thead><tr><th>Grupo farmacológico</th><th>Fármaco</th><th>Mecanismo de acción</th><th>Datos relevantes</th><th>Efecto adverso más frecuente o clave</th></tr></thead>
+                    <tbody>
+                        <tr><td>Catecolamina α₁ predominante con actividad β₁</td><td>Noradrenalina</td><td>Estimula α₁ intensamente y β₁ de forma moderada; poca actividad β₂.</td><td>↑ RVS y PAM. Vasopresor de primera línea en shock séptico; el efecto principal es vasopresor. La extravasación puede causar necrosis.</td><td>Vasoconstricción e isquemia periférica; arritmias e hipertensión.</td></tr>
+                        <tr><td>Catecolamina α y β no selectiva</td><td>Adrenalina</td><td>Estimula β₁, β₂ y α₁; a dosis bajas predominan β, a mayor exposición aumenta vasoconstricción α₁.</td><td>↑ contractilidad y FC; fundamental en anafilaxia y paro cardiaco. Puede ser inopresor en shock refractario o disfunción cardiaca.</td><td>Taquicardia y arritmias; hiperglucemia, hipopotasemia, isquemia y ↑ lactato.</td></tr>
+                        <tr><td>Catecolamina dependiente de concentración</td><td>Dopamina</td><td>Estimula receptores dopaminérgicos, β₁ y α₁ en proporción variable.</td><td>↑ gasto y PA, pero produce más arritmias que noradrenalina. “Dopamina renal” no está recomendada; uso seleccionado en shock con bradiarritmia y bajo riesgo de taquicardia.</td><td>Taquicardia, arritmias, isquemia periférica y necrosis por extravasación.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="subtituloMaterial">Vasopresores predominantes sin inotropismo relevante</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaVasoactivos">
+                    <thead><tr><th>Grupo farmacológico</th><th>Fármaco</th><th>Mecanismo de acción</th><th>Datos relevantes</th><th>Efecto adverso más frecuente o clave</th></tr></thead>
+                    <tbody>
+                        <tr><td>Agonista α₁ selectivo</td><td>Fenilefrina</td><td>Estimula α₁ vascular: ↑ Ca²⁺ intracelular y vasoconstricción arterial/venosa.</td><td>↑ RVS y PA; puede ↓ gasto por ↑ poscarga y bradicardia refleja. Útil en hipotensión vasodilatadora cuando no se desea estímulo β.</td><td>Bradicardia refleja; hipertensión e isquemia.</td></tr>
+                        <tr><td>Agonista de receptores de vasopresina</td><td>Vasopresina</td><td>Estimula V₁-Gq → PLC–IP₃ → ↑ Ca²⁺ vascular. V₂ causa retención de agua.</td><td>No es catecolamina. Se añade a noradrenalina en shock vasodilatador; poco inotropismo directo y puede ↓ gasto cardiaco.</td><td>Isquemia periférica, digital o mesentérica; hiponatremia, bradicardia y ↓ gasto.</td></tr>
+                        <tr><td>Agonista de angiotensina II</td><td>Angiotensina II</td><td>Activa AT₁: ↑ Ca²⁺ vascular, vasoconstricción y aldosterona.</td><td>Opción en shock vasodilatador refractario seleccionado. ↑ RVS intensamente sin ser inotrópico; requiere profilaxis antitrombótica si no hay contraindicación.</td><td>Eventos tromboembólicos e hipertensión.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <aside class="ideaCentral">
+                <h4>Comparación hemodinámica</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaHemodinamica">
+                        <thead><tr><th>Fármaco</th><th>Contractilidad</th><th>Frecuencia cardiaca</th><th>RVS</th><th>Gasto cardiaco</th><th>Presión arterial</th></tr></thead>
+                        <tbody>
+                            <tr><td>Dobutamina</td><td>↑↑</td><td>↑ leve/moderada</td><td>↓</td><td>↑↑</td><td>↔ o ↓</td></tr>
+                            <tr><td>Milrinona</td><td>↑</td><td>↑ leve</td><td>↓↓</td><td>↑</td><td>↔ o ↓</td></tr>
+                            <tr><td>Levosimendán</td><td>↑</td><td>↑ leve</td><td>↓</td><td>↑</td><td>↔ o ↓</td></tr>
+                            <tr><td>Noradrenalina</td><td>↑ leve</td><td>↔ o ↓ refleja</td><td>↑↑</td><td>↔ o ↑ leve</td><td>↑↑</td></tr>
+                            <tr><td>Adrenalina</td><td>↑↑</td><td>↑↑</td><td>Variable; generalmente ↑</td><td>↑↑</td><td>↑</td></tr>
+                            <tr><td>Dopamina</td><td>↑</td><td>↑↑</td><td>↑ a concentración alta</td><td>↑</td><td>↑</td></tr>
+                            <tr><td>Fenilefrina</td><td>↔</td><td>↓ refleja</td><td>↑↑</td><td>↔ o ↓</td><td>↑</td></tr>
+                            <tr><td>Vasopresina</td><td>↔ o ↓</td><td>↔ o ↓</td><td>↑↑</td><td>↔ o ↓</td><td>↑</td></tr>
+                            <tr><td>Angiotensina II</td><td>↔</td><td>↔</td><td>↑↑</td><td>Variable</td><td>↑</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Las flechas muestran tendencias generales; el efecto real depende de la concentración, volemia y función cardiaca.</p>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>🔎 Claves para responder preguntas</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaDiferencias">
+                        <thead><tr><th>Si la pregunta menciona…</th><th>Pensar en…</th></tr></thead>
+                        <tbody>
+                            <tr><td>Bajo gasto cardiaco con presión arterial conservada</td><td>Dobutamina o milrinona.</td></tr>
+                            <tr><td>↑ contractilidad más ↓ poscarga</td><td>Inodilatador.</td></tr>
+                            <tr><td>Paciente con β-bloqueador que necesita inotropía</td><td>Milrinona puede conservar mejor su efecto.</td></tr>
+                            <tr><td>Insuficiencia renal</td><td>Precaución con milrinona por acumulación.</td></tr>
+                            <tr><td>Shock séptico</td><td>Noradrenalina como vasopresor inicial.</td></tr>
+                            <tr><td>Shock séptico con PA adecuada, hipoperfusión y disfunción cardiaca</td><td>Añadir dobutamina a noradrenalina o considerar adrenalina según contexto.</td></tr>
+                            <tr><td>Shock refractario a noradrenalina</td><td>Añadir vasopresina; luego pueden considerarse otros agentes.</td></tr>
+                            <tr><td>Anafilaxia / paro cardiaco</td><td>Adrenalina.</td></tr>
+                            <tr><td>Vasopresor que causa bradicardia refleja</td><td>Fenilefrina.</td></tr>
+                            <tr><td>↑ lactato tras iniciar fármaco</td><td>Adrenalina puede estimular glucólisis y producción de lactato.</td></tr>
+                            <tr><td>Taquiarritmias frecuentes</td><td>Dopamina, adrenalina o dobutamina.</td></tr>
+                            <tr><td>“Dopamina renal”</td><td>No está recomendada para protección renal.</td></tr>
+                            <tr><td>Isquemia digital o mesentérica</td><td>Exceso de vasoconstricción: noradrenalina, vasopresina o fenilefrina.</td></tr>
+                            <tr><td>Extravasación de catecolamina</td><td>Riesgo de necrosis; fentolamina puede usarse según protocolo.</td></tr>
+                            <tr><td>Sensibilización de troponina C al Ca²⁺</td><td>Levosimendán.</td></tr>
+                            <tr><td>Inhibición de PDE-3</td><td>Milrinona.</td></tr>
+                            <tr><td>Receptor V₁ / receptor α₁ puro</td><td>Vasopresina / fenilefrina.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>Concepto esencial</h4>
+                <ul>
+                    <li><strong>Bomba deficiente:</strong> necesita principalmente un inotrópico.</li>
+                    <li><strong>Vasodilatación excesiva:</strong> necesita principalmente un vasopresor.</li>
+                    <li><strong>Bomba deficiente más hipotensión:</strong> puede requerir un inopresor o un vasopresor combinado con inodilatador.</li>
+                    <li><strong>Hipovolemia:</strong> los fármacos no sustituyen una reposición adecuada de volumen.</li>
+                </ul>
+            </aside>
+
+            <div class="fuentesMaterial">
+                <strong>Fuentes de repaso:</strong>
+                <a href="https://www.sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines" target="_blank" rel="noopener noreferrer">SCCM: guías de sepsis</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a0882db1-2532-4b80-b753-68f013fe79e7" target="_blank" rel="noopener noreferrer">DailyMed: dobutamina</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=4c2f052b-7ba2-4122-a50b-37ef2a834d61" target="_blank" rel="noopener noreferrer">DailyMed: milrinona</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=52e22892-4fc3-4f53-9f39-0b5c66da3040&amp;version=3" target="_blank" rel="noopener noreferrer">DailyMed: noradrenalina</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=eadd82d7-e2cb-4144-9f0c-b340f54c6fa4" target="_blank" rel="noopener noreferrer">DailyMed: vasopresina</a>
+                <a href="https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7a23ed28-3912-4398-b660-bf9ec3ee3926" target="_blank" rel="noopener noreferrer">DailyMed: fenilefrina</a>
+            </div>
+            <p class="avisoMaterial">Uso educativo. Estos medicamentos requieren infusión IV y vigilancia continua de presión arterial, ritmo, perfusión, diuresis y lactato.</p>
+        </section>
+
+        <section id="materialReceptoresAdrenergicos" class="materialFarmacologia" aria-labelledby="tituloReceptoresAdrenergicos" style="display:none;">
+            <button id="btnVolverCatalogoReceptoresAdrenergicos" class="enlaceVolver" type="button">← Volver a materiales</button>
+            <span class="etiquetaSeccion">FARMACOLOGÍA · SISTEMA NERVIOSO AUTÓNOMO</span>
+            <h3 id="tituloReceptoresAdrenergicos">Receptores adrenérgicos</h3>
+            <p class="descripcionMaterial">Todos los receptores adrenérgicos son receptores acoplados a proteína G. Esta tabla integra sus vías de señalización, localización, efectos y asociaciones farmacológicas relevantes.</p>
+
+            <h4 class="subtituloMaterial">Receptores principales</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio">
+                    <thead><tr><th>Tipo y clase</th><th>Proteína G y segundo mensajero</th><th>Ubicación principal</th><th>Función al estimularse</th><th>Fármacos y datos relevantes</th></tr></thead>
+                    <tbody>
+                        <tr><td>α₁</td><td><strong>Gq</strong> → PLC → IP₃/DAG → ↑ Ca²⁺ intracelular</td><td>Músculo liso vascular, iris radial, próstata, cuello vesical, esfínteres gastrointestinales e hígado.</td><td>Vasoconstricción, ↑ presión arterial, midriasis, contracción prostática y del esfínter urinario, eyaculación, piloerección y glucogenólisis.</td><td><strong>Agonista:</strong> fenilefrina. <strong>Antagonistas:</strong> prazosina, doxazosina y terazosina. Tamsulosina facilita el flujo urinario; bloquear α₁ puede causar hipotensión ortostática.</td></tr>
+                        <tr><td>α₂</td><td><strong>Gi</strong> → inhibe adenilato ciclasa → ↓ AMPc; reduce entrada presináptica de Ca²⁺</td><td>Terminales simpáticas presinápticas, tronco encefálico, células β pancreáticas, plaquetas y cuerpo ciliar.</td><td>↓ liberación de noradrenalina, ↓ actividad simpática central, ↓ insulina, ↑ agregación plaquetaria y ↓ producción de humor acuoso.</td><td><strong>Agonistas:</strong> clonidina, metildopa, dexmedetomidina, brimonidina y apraclonidina. Clonidina puede causar sedación, boca seca, bradicardia e hipertensión de rebote al suspenderse bruscamente.</td></tr>
+                        <tr><td>β₁</td><td><strong>Gs</strong> → adenilato ciclasa → ↑ AMPc → PKA → ↑ Ca²⁺</td><td>Corazón: nodos SA y AV, aurículas y ventrículos; células yuxtaglomerulares renales.</td><td>↑ frecuencia cardiaca, contractilidad, velocidad de conducción y relajación; ↑ secreción de renina.</td><td><strong>Agonista:</strong> dobutamina. <strong>Antagonistas relativamente selectivos:</strong> metoprolol, atenolol, bisoprolol y esmolol. La estimulación favorece taquicardia y arritmias; el bloqueo puede causar bradicardia y bloqueo AV.</td></tr>
+                        <tr><td>β₂</td><td><strong>Gs</strong> → ↑ AMPc → PKA; en músculo liso reduce la actividad de MLCK</td><td>Bronquios, vasos del músculo esquelético, útero, pared gastrointestinal, hígado, músculo esquelético, células β pancreáticas y cuerpo ciliar.</td><td>Broncodilatación, vasodilatación, relajación uterina y gastrointestinal, glucogenólisis, gluconeogénesis, ↑ insulina, entrada celular de K⁺ y temblor.</td><td><strong>Agonistas:</strong> salbutamol, terbutalina, formoterol y salmeterol. <strong>Antagonista no selectivo:</strong> propranolol. Los agonistas pueden producir temblor, taquicardia e hipopotasemia.</td></tr>
+                        <tr><td>β₃</td><td>Principalmente <strong>Gs</strong> → ↑ AMPc; puede acoplarse a Gi según el tejido.</td><td>Músculo detrusor de la vejiga y tejido adiposo.</td><td>Relajación del detrusor, aumento de la capacidad vesical, lipólisis y termogénesis.</td><td><strong>Agonista:</strong> mirabegrón, usado en vejiga hiperactiva. Puede producir hipertensión, taquicardia e infección urinaria.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="subtituloMaterial">Comparación por órganos</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaDiferencias">
+                    <thead><tr><th>Órgano o tejido</th><th>Receptor predominante</th><th>Resultado de la estimulación</th></tr></thead>
+                    <tbody>
+                        <tr><td>Nodo SA</td><td>β₁</td><td>↑ frecuencia cardiaca: cronotropismo positivo.</td></tr>
+                        <tr><td>Nodo AV</td><td>β₁</td><td>↑ velocidad de conducción: dromotropismo positivo.</td></tr>
+                        <tr><td>Miocardio ventricular</td><td>β₁</td><td>↑ contractilidad: inotropismo positivo.</td></tr>
+                        <tr><td>Células yuxtaglomerulares</td><td>β₁</td><td>↑ liberación de renina.</td></tr>
+                        <tr><td>Vasos cutáneos, renales y esplácnicos</td><td>α₁</td><td>Vasoconstricción.</td></tr>
+                        <tr><td>Vasos del músculo esquelético</td><td>β₂</td><td>Vasodilatación.</td></tr>
+                        <tr><td>Bronquios</td><td>β₂</td><td>Broncodilatación.</td></tr>
+                        <tr><td>Iris radial</td><td>α₁</td><td>Midriasis sin cicloplejía.</td></tr>
+                        <tr><td>Iris esfínter y músculo ciliar</td><td>Muscarínico M₃</td><td>Miosis y acomodación; no es un efecto adrenérgico.</td></tr>
+                        <tr><td>Próstata y cuello vesical</td><td>α₁</td><td>Contracción y aumento de resistencia al flujo urinario.</td></tr>
+                        <tr><td>Detrusor vesical</td><td>β₃</td><td>Relajación y aumento de capacidad vesical.</td></tr>
+                        <tr><td>Útero</td><td>β₂</td><td>Relajación.</td></tr>
+                        <tr><td>Hígado</td><td>α₁ y β₂</td><td>Glucogenólisis y aumento de glucosa.</td></tr>
+                        <tr><td>Páncreas, células β</td><td>α₂</td><td>↓ secreción de insulina.</td></tr>
+                        <tr><td>Músculo esquelético</td><td>β₂</td><td>Entrada de K⁺ y temblor.</td></tr>
+                        <tr><td>Tejido adiposo</td><td>β₃ y β₁</td><td>Lipólisis.</td></tr>
+                        <tr><td>Terminal nerviosa presináptica</td><td>α₂</td><td>↓ liberación de noradrenalina.</td></tr>
+                        <tr><td>Cuerpo ciliar</td><td>α₂</td><td>↓ producción de humor acuoso.</td></tr>
+                        <tr><td>Plaquetas</td><td>α₂</td><td>↑ agregación.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="subtituloMaterial">Selectividad de los principales agonistas</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaDiferencias">
+                    <thead><tr><th>Fármaco</th><th>Receptores predominantes</th><th>Efecto principal</th></tr></thead>
+                    <tbody>
+                        <tr><td>Adrenalina</td><td>α₁, α₂, β₁ y β₂</td><td>↑ contractilidad y frecuencia, broncodilatación y vasoconstricción dependiente de la concentración.</td></tr>
+                        <tr><td>Noradrenalina</td><td>α₁, α₂ y β₁; escaso β₂</td><td>Vasoconstricción intensa y aumento de presión arterial.</td></tr>
+                        <tr><td>Isoproterenol</td><td>β₁ y β₂</td><td>Taquicardia, aumento de contractilidad y vasodilatación.</td></tr>
+                        <tr><td>Dobutamina</td><td>β₁ predominante</td><td>Aumento de contractilidad y gasto cardiaco.</td></tr>
+                        <tr><td>Fenilefrina</td><td>α₁</td><td>Vasoconstricción, midriasis y descongestión.</td></tr>
+                        <tr><td>Clonidina</td><td>α₂ central</td><td>Disminución de la descarga simpática.</td></tr>
+                        <tr><td>Salbutamol</td><td>β₂</td><td>Broncodilatación.</td></tr>
+                        <tr><td>Terbutalina</td><td>β₂</td><td>Broncodilatación y relajación uterina.</td></tr>
+                        <tr><td>Mirabegrón</td><td>β₃</td><td>Relajación del detrusor.</td></tr>
+                        <tr><td>Dopamina</td><td>D₁ → β₁ → α₁ según exposición</td><td>Vasodilatación dopaminérgica, estimulación cardiaca y finalmente vasoconstricción.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <aside class="ideaCentral">
+                <h4>🔎 Claves para responder preguntas</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaDiferencias">
+                        <thead><tr><th>Si la pregunta menciona…</th><th>Receptor o fármaco</th></tr></thead>
+                        <tbody>
+                            <tr><td>Gq, PLC, IP₃/DAG y aumento de Ca²⁺</td><td>α₁.</td></tr>
+                            <tr><td>Gi y disminución de AMPc</td><td>α₂.</td></tr>
+                            <tr><td>Gs y aumento de AMPc</td><td>β₁, β₂ o β₃.</td></tr>
+                            <tr><td>Vasoconstricción y midriasis</td><td>α₁.</td></tr>
+                            <tr><td>Hipotensión ortostática por bloqueo</td><td>α₁.</td></tr>
+                            <tr><td>Disminución presináptica de noradrenalina</td><td>α₂.</td></tr>
+                            <tr><td>Hipertensión de rebote al suspender un fármaco</td><td>Clonidina.</td></tr>
+                            <tr><td>Aumento de frecuencia, conducción y contractilidad</td><td>β₁.</td></tr>
+                            <tr><td>Aumento de renina</td><td>β₁.</td></tr>
+                            <tr><td>Broncodilatación; temblor e hipopotasemia</td><td>Agonista β₂.</td></tr>
+                            <tr><td>Broncoconstricción tras un β-bloqueador</td><td>Bloqueo β₂ por un fármaco no selectivo.</td></tr>
+                            <tr><td>Relajación uterina</td><td>β₂.</td></tr>
+                            <tr><td>Relajación del detrusor</td><td>β₃.</td></tr>
+                            <tr><td>Hiperplasia prostática</td><td>Bloqueo α₁ con tamsulosina.</td></tr>
+                            <tr><td>Vejiga hiperactiva</td><td>Agonista β₃: mirabegrón.</td></tr>
+                            <tr><td>Midriasis sin pérdida de acomodación</td><td>Agonista α₁.</td></tr>
+                            <tr><td>Taquicardia y arritmias con un inotrópico</td><td>Estimulación β₁.</td></tr>
+                            <tr><td>Disminución de producción de humor acuoso</td><td>Agonista α₂ ocular.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>Trampas frecuentes</h4>
+                <ul>
+                    <li>Las glándulas sudoríparas reciben inervación simpática, pero utilizan principalmente receptores <strong>muscarínicos</strong>, no adrenérgicos.</li>
+                    <li>La médula suprarrenal es estimulada por acetilcolina sobre receptores <strong>nicotínicos</strong>, no directamente por receptores α o β.</li>
+                    <li>La estimulación β₂ aumenta el AMPc, pero causa <strong>relajación</strong> del músculo liso porque inhibe funcionalmente la cinasa de la cadena ligera de miosina.</li>
+                    <li>La noradrenalina aumenta la presión arterial y puede provocar <strong>bradicardia refleja</strong>, aunque estimule β₁.</li>
+                    <li>La fenilefrina causa midriasis, pero no cicloplejía; la acomodación depende principalmente del receptor muscarínico M₃.</li>
+                </ul>
+            </aside>
+
+            <div class="fuentesMaterial">
+                <strong>Fuentes de repaso:</strong>
+                <a href="https://www.guidetopharmacology.org/GRAC/FamilyIntroductionForward?familyId=4" target="_blank" rel="noopener noreferrer">IUPHAR: familia de adrenoceptores</a>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK534230/" target="_blank" rel="noopener noreferrer">NCBI: fármacos adrenérgicos</a>
+                <a href="https://www.merckmanuals.com/home/multimedia/table/targets-in-the-body-cell-receptors" target="_blank" rel="noopener noreferrer">Manual Merck: receptores celulares</a>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK595003/" target="_blank" rel="noopener noreferrer">NCBI: sistema nervioso autónomo</a>
+            </div>
+            <p class="avisoMaterial">Uso educativo. La aplicación clínica de fármacos adrenérgicos requiere valoración individual, monitorización y protocolos actualizados.</p>
+        </section>
+
+        <section id="materialReceptoresMuscarinicos" class="materialFarmacologia" aria-labelledby="tituloReceptoresMuscarinicos" style="display:none;">
+            <button id="btnVolverCatalogoReceptoresMuscarinicos" class="enlaceVolver" type="button">← Volver a materiales</button>
+            <span class="etiquetaSeccion">FARMACOLOGÍA · SISTEMA NERVIOSO AUTÓNOMO</span>
+            <h3 id="tituloReceptoresMuscarinicos">Receptores muscarínicos</h3>
+            <p class="descripcionMaterial">Los receptores muscarínicos son activados por acetilcolina y pertenecen a la familia de receptores acoplados a proteína G. Se clasifican en M₁, M₂, M₃, M₄ y M₅.</p>
+
+            <h4 class="subtituloMaterial">Receptores principales</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio">
+                    <thead><tr><th>Tipo y clase</th><th>Proteína G y segundo mensajero</th><th>Ubicación principal</th><th>Función al estimularse</th><th>Fármacos y datos relevantes</th></tr></thead>
+                    <tbody>
+                        <tr><td>M₁: neuronal</td><td><strong>Gq</strong> → PLC → IP₃/DAG → ↑ Ca²⁺</td><td>SNC, corteza cerebral, hipocampo, ganglios autónomos, sistema nervioso entérico y secreción gástrica.</td><td>Favorece excitabilidad neuronal, cognición, transmisión ganglionar y secreción gástrica indirecta.</td><td>Pilocarpina tiene actividad M₁ sin ser selectiva. Pirenzepina es relativamente selectiva y de uso limitado. El bloqueo central contribuye a confusión, amnesia y delirio.</td></tr>
+                        <tr><td>M₂: cardiaco</td><td><strong>Gi/o</strong> → ↓ AMPc; abre canales de K⁺ y reduce entrada de Ca²⁺.</td><td>Nodo SA, nodo AV, aurículas y terminales colinérgicas presinápticas.</td><td>↓ frecuencia cardiaca, ↓ conducción AV, ↓ contractilidad auricular e inhibición de liberación adicional de acetilcolina.</td><td>Atropina se emplea en bradicardia sintomática. El bloqueo aumenta la frecuencia cardiaca; los agonistas pueden causar bradicardia y bloqueo AV.</td></tr>
+                        <tr><td>M₃: glandular y músculo liso</td><td><strong>Gq</strong> → PLC → IP₃/DAG → ↑ Ca²⁺.</td><td>Glándulas exocrinas, bronquios, tubo digestivo, vejiga, iris esfínter, músculo ciliar, endotelio vascular y glándulas sudoríparas.</td><td>↑ secreciones, broncoconstricción, ↑ peristaltismo, contracción del detrusor, miosis, acomodación, liberación de NO y vasodilatación.</td><td><strong>Agonistas:</strong> betanecol, pilocarpina y cevimelina. <strong>Antagonistas:</strong> ipratropio, tiotropio, oxibutinina, solifenacina, darifenacina y tropicamida. El bloqueo causa sequedad, visión borrosa, estreñimiento y retención urinaria.</td></tr>
+                        <tr><td>M₄: neuronal</td><td><strong>Gi/o</strong> → ↓ AMPc; modula canales iónicos y liberación de neurotransmisores.</td><td>SNC: cuerpo estriado, corteza, hipocampo y terminales presinápticas.</td><td>Modula liberación de acetilcolina y dopamina; participa en locomoción, cognición y circuitos extrapiramidales.</td><td>No hay fármacos clínicos altamente selectivos; el bloqueo central puede contribuir a alteraciones cognitivas.</td></tr>
+                        <tr><td>M₅: neuronal y vascular cerebral</td><td><strong>Gq</strong> → PLC → IP₃/DAG → ↑ Ca²⁺.</td><td>SNC, neuronas dopaminérgicas y vasos cerebrales.</td><td>Modula liberación de dopamina, recompensa, aprendizaje y vasodilatación cerebral.</td><td>No posee agonistas ni antagonistas selectivos de uso clínico habitual; su función se conoce principalmente por estudios experimentales.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="subtituloMaterial">Efectos por órganos</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaDiferencias">
+                    <thead><tr><th>Órgano o tejido</th><th>Receptor predominante</th><th>Resultado de la estimulación</th></tr></thead>
+                    <tbody>
+                        <tr><td>Nodo SA</td><td>M₂</td><td>↓ frecuencia cardiaca.</td></tr>
+                        <tr><td>Nodo AV</td><td>M₂</td><td>↓ velocidad de conducción y ↑ período refractario.</td></tr>
+                        <tr><td>Aurículas</td><td>M₂</td><td>↓ contractilidad auricular.</td></tr>
+                        <tr><td>Ventrículos</td><td>M₂, menor densidad</td><td>Poco efecto directo en condiciones normales.</td></tr>
+                        <tr><td>Bronquios</td><td>M₃</td><td>Broncoconstricción y ↑ secreción.</td></tr>
+                        <tr><td>Glándulas salivales y lagrimales</td><td>M₃</td><td>↑ salivación y lagrimación.</td></tr>
+                        <tr><td>Glándulas sudoríparas</td><td>M₃</td><td>↑ sudoración.</td></tr>
+                        <tr><td>Estómago</td><td>M₁ y M₃</td><td>↑ secreción ácida y actividad digestiva.</td></tr>
+                        <tr><td>Intestino</td><td>M₃</td><td>↑ peristaltismo y secreción; relajación funcional de esfínteres.</td></tr>
+                        <tr><td>Detrusor vesical</td><td>M₃</td><td>Contracción y micción.</td></tr>
+                        <tr><td>Trígono y esfínter interno vesical</td><td>Efecto parasimpático indirecto</td><td>Relajación funcional que facilita la micción.</td></tr>
+                        <tr><td>Iris esfínter</td><td>M₃</td><td>Miosis.</td></tr>
+                        <tr><td>Músculo ciliar</td><td>M₃</td><td>Contracción para visión cercana y aumento del drenaje trabecular.</td></tr>
+                        <tr><td>Endotelio vascular intacto</td><td>M₃</td><td>Liberación de NO → ↑ GMPc en músculo liso → vasodilatación.</td></tr>
+                        <tr><td>Vasos sin endotelio funcional</td><td>M₃ del músculo liso</td><td>Puede predominar vasoconstricción.</td></tr>
+                        <tr><td>SNC</td><td>M₁, M₄ y M₅</td><td>Cognición, memoria y modulación de neurotransmisores.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="descripcionMaterial"><strong>Clave vesical:</strong> aunque en la vejiga existen numerosos receptores M₂, la contracción fisiológicamente más importante del detrusor depende principalmente de M₃.</p>
+
+            <h4 class="subtituloMaterial">Agonistas muscarínicos</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaDiferencias">
+                    <thead><tr><th>Fármaco</th><th>Acción predominante</th><th>Uso característico</th><th>Efectos adversos relevantes</th></tr></thead>
+                    <tbody>
+                        <tr><td>Betanecol</td><td>Agonista muscarínico directo, funcionalmente sobre M₃.</td><td>Retención urinaria no obstructiva e íleo posoperatorio.</td><td>Diarrea, cólicos, sudoración, broncoespasmo, hipotensión y bradicardia.</td></tr>
+                        <tr><td>Pilocarpina</td><td>Agonista muscarínico no selectivo.</td><td>Xerostomía y glaucoma; produce miosis y favorece salida del humor acuoso.</td><td>Sudoración, salivación, visión borrosa y broncoespasmo.</td></tr>
+                        <tr><td>Cevimelina</td><td>Preferencia funcional por M₁/M₃, especialmente M₃ glandular.</td><td>Xerostomía por síndrome de Sjögren.</td><td>Sudoración, náuseas y alteraciones visuales.</td></tr>
+                        <tr><td>Metacolina</td><td>Agonista muscarínico directo.</td><td>Prueba de provocación bronquial para hiperreactividad de vía aérea.</td><td>Broncoconstricción.</td></tr>
+                        <tr><td>Carbacol</td><td>Agonista muscarínico y nicotínico.</td><td>Uso oftálmico para inducir miosis y reducir presión intraocular.</td><td>Miosis, espasmo de acomodación y efectos colinérgicos sistémicos si se absorbe.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="subtituloMaterial">Antagonistas muscarínicos</h4>
+            <div class="tablaResponsive">
+                <table class="tablaEstudio tablaDiferencias">
+                    <thead><tr><th>Fármaco o grupo</th><th>Acción predominante</th><th>Uso característico</th><th>Efectos adversos relevantes</th></tr></thead>
+                    <tbody>
+                        <tr><td>Atropina</td><td>Antagonista muscarínico no selectivo.</td><td>Bradicardia sintomática, intoxicación por organofosforados y reducción de secreciones.</td><td>Boca seca, midriasis, visión borrosa, taquicardia, retención urinaria, hipertermia y confusión.</td></tr>
+                        <tr><td>Escopolamina</td><td>Antagonista muscarínico con efecto central.</td><td>Prevención de cinetosis y náuseas.</td><td>Somnolencia, boca seca, visión borrosa y confusión.</td></tr>
+                        <tr><td>Ipratropio</td><td>Antagonista inhalado de acción corta.</td><td>Broncodilatación en EPOC y como complemento en asma.</td><td>Boca seca y sabor amargo; pocos efectos sistémicos.</td></tr>
+                        <tr><td>Tiotropio</td><td>Antagonista inhalado de acción prolongada.</td><td>Mantenimiento de EPOC y determinados casos de asma.</td><td>Boca seca; puede empeorar retención urinaria o glaucoma si entra en los ojos.</td></tr>
+                        <tr><td>Oxibutinina</td><td>Antagonista vesical, funcionalmente M₃.</td><td>Vejiga hiperactiva e incontinencia de urgencia.</td><td>Boca seca, estreñimiento, visión borrosa y confusión, especialmente en adultos mayores.</td></tr>
+                        <tr><td>Solifenacina y darifenacina</td><td>Preferencia por M₃.</td><td>Vejiga hiperactiva.</td><td>Boca seca y estreñimiento.</td></tr>
+                        <tr><td>Tolterodina</td><td>Selectividad funcional por vejiga.</td><td>Vejiga hiperactiva.</td><td>Boca seca y estreñimiento.</td></tr>
+                        <tr><td>Tropicamida</td><td>Antagonista oftálmico de acción relativamente corta.</td><td>Midriasis y cicloplejía para examen ocular.</td><td>Fotofobia y visión borrosa.</td></tr>
+                        <tr><td>Benztropina</td><td>Antimuscarínico con acción central.</td><td>Parkinsonismo y síntomas extrapiramidales por antipsicóticos.</td><td>Confusión, estreñimiento, retención urinaria y visión borrosa.</td></tr>
+                        <tr><td>Glicopirrolato</td><td>Antimuscarínico cuaternario con poca penetración al SNC.</td><td>Reducción de secreciones y prevención de efectos muscarínicos de inhibidores de acetilcolinesterasa.</td><td>Boca seca, estreñimiento y retención urinaria; menos confusión central.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <aside class="ideaCentral">
+                <h4>🔎 Claves para responder preguntas</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaDiferencias">
+                        <thead><tr><th>Si la pregunta menciona…</th><th>Receptor o fármaco</th></tr></thead>
+                        <tbody>
+                            <tr><td>M₁, M₃ o M₅</td><td>Gq → IP₃/DAG → ↑ Ca²⁺.</td></tr>
+                            <tr><td>M₂ o M₄</td><td>Gi → ↓ AMPc.</td></tr>
+                            <tr><td>Disminución de frecuencia cardiaca</td><td>M₂.</td></tr>
+                            <tr><td>Bradicardia sintomática</td><td>Atropina.</td></tr>
+                            <tr><td>Broncoconstricción y aumento de secreciones</td><td>M₃.</td></tr>
+                            <tr><td>Broncodilatación antimuscarínica inhalada</td><td>Ipratropio o tiotropio.</td></tr>
+                            <tr><td>Contracción del detrusor</td><td>M₃.</td></tr>
+                            <tr><td>Retención urinaria no obstructiva</td><td>Betanecol.</td></tr>
+                            <tr><td>Vejiga hiperactiva</td><td>Oxibutinina, solifenacina, darifenacina o tolterodina.</td></tr>
+                            <tr><td>Miosis y acomodación para visión cercana</td><td>M₃.</td></tr>
+                            <tr><td>Midriasis con cicloplejía</td><td>Bloqueo M₃ con tropicamida o atropina.</td></tr>
+                            <tr><td>Xerostomía por síndrome de Sjögren</td><td>Cevimelina o pilocarpina.</td></tr>
+                            <tr><td>Cinetosis</td><td>Escopolamina.</td></tr>
+                            <tr><td>Prueba de provocación para asma</td><td>Metacolina.</td></tr>
+                            <tr><td>Delirio, piel seca, midriasis y retención urinaria</td><td>Intoxicación antimuscarínica.</td></tr>
+                            <tr><td>Salivación, lagrimación, diarrea, miosis y broncorrea</td><td>Exceso colinérgico.</td></tr>
+                            <tr><td>Intoxicación por organofosforados</td><td>Atropina más pralidoxima, junto con soporte clínico.</td></tr>
+                            <tr><td>Efectos extrapiramidales por antipsicótico</td><td>Benztropina.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>Diferencia entre receptores muscarínicos y nicotínicos</h4>
+                <div class="tablaResponsive tablaDiferenciasResponsive">
+                    <table class="tablaEstudio tablaDiferencias">
+                        <thead><tr><th>Característica</th><th>Muscarínicos</th><th>Nicotínicos</th></tr></thead>
+                        <tbody>
+                            <tr><td>Tipo de receptor</td><td>Acoplado a proteína G.</td><td>Canal catiónico activado por ligando.</td></tr>
+                            <tr><td>Subtipos</td><td>M₁–M₅.</td><td>Nₙ y Nₘ.</td></tr>
+                            <tr><td>Velocidad</td><td>Relativamente lenta y moduladora.</td><td>Rápida y despolarizante.</td></tr>
+                            <tr><td>Ubicación típica</td><td>Órganos efectores parasimpáticos, corazón, glándulas, músculo liso y SNC.</td><td>Ganglios autónomos, médula suprarrenal y unión neuromuscular.</td></tr>
+                            <tr><td>Antagonista representativo</td><td>Atropina.</td><td>Bloqueadores ganglionares o neuromusculares, según subtipo.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <aside class="ideaCentral">
+                <h4>Trampas frecuentes</h4>
+                <ul>
+                    <li>La sudoración pertenece al sistema <strong>simpático</strong>, pero utiliza acetilcolina y receptores <strong>M₃</strong>.</li>
+                    <li>La atropina revierte secreciones, broncoconstricción y bradicardia por organofosforados, pero no corrige eficazmente la debilidad nicotínica; la <strong>pralidoxima</strong> es importante si se administra oportunamente.</li>
+                    <li>El receptor M₃ vascular produce vasodilatación mediante <strong>óxido nítrico</strong>, aunque M₃ normalmente eleve el Ca²⁺.</li>
+                    <li>Los antimuscarínicos pueden precipitar retención urinaria, íleo y glaucoma de ángulo cerrado.</li>
+                    <li>La mayoría de agonistas y antagonistas clínicos no son completamente selectivos para un solo subtipo.</li>
+                </ul>
+            </aside>
+
+            <div class="fuentesMaterial">
+                <strong>Fuentes de repaso:</strong>
+                <a href="https://www.guidetopharmacology.org/GRAC/FamilyDisplayForward?familyId=2" target="_blank" rel="noopener noreferrer">IUPHAR: receptores muscarínicos</a>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK553130/" target="_blank" rel="noopener noreferrer">NCBI: agonistas muscarínicos</a>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK557541/" target="_blank" rel="noopener noreferrer">NCBI: antagonistas muscarínicos</a>
+                <a href="https://www.ncbi.nlm.nih.gov/books/NBK526134/" target="_blank" rel="noopener noreferrer">NCBI: fisiología de receptores colinérgicos</a>
+            </div>
+            <p class="avisoMaterial">Uso educativo. Los fármacos colinérgicos y antimuscarínicos requieren valoración individual, contraindicaciones y protocolos clínicos actualizados.</p>
+        </section>
+
+        <section class="regresoInicio" aria-label="Navegación">
+            <div>
+                <strong>¿Quieres elegir otra actividad?</strong>
+                <small>Regresa al menú principal para continuar con preguntas, banqueo o progreso.</small>
+            </div>
+            <button id="btnVolverTablasApuntes" class="botonVolverCursos" type="button">← Menú principal</button>
+        </section>
+    </div>
+
+    <!--========================================-->
+    <!-- QUIÉN SOY -->
+    <!--========================================-->
+
+    <div class="contenedor" id="pantallaQuienSoy" style="display:none;">
+        <section class="seccionQuienSoy">
+            <span class="etiquetaSeccion">SOBRE LA PLATAFORMA</span>
+            <h2>Una plataforma para aprender con propósito</h2>
+            <p>Esta es una plataforma de práctica de farmacología. Reúne preguntas explicadas y organizadas por temas para facilitar un estudio activo, flexible y progresivo.</p>
+            <p>El objetivo es acompañar la preparación académica mediante práctica por temas, simulacros de 20 preguntas y estadísticas de progreso guardadas en el navegador.</p>
+        </section>
+
+        <section class="fuentesBibliograficas">
+            <span class="etiquetaSeccion">FUENTES Y BIBLIOGRAFÍA</span>
+            <h3>Preguntas seleccionadas para farmacología</h3>
+            <p>El banco incorpora preguntas cuidadosamente seleccionadas de exámenes ENCIB 2024 y 2025, así como de evaluaciones ENAM y de Residentado Médico.</p>
+            <p>Estas fuentes se utilizan para identificar contenidos con valor formativo en farmacología, siempre acompañados de una explicación para favorecer el aprendizaje.</p>
+        </section>
+
+        <section class="regresoInicio" aria-label="Navegación">
+            <div>
+                <strong>¿Listo para practicar?</strong>
+                <small>Regresa al menú principal y elige la actividad que necesites.</small>
+            </div>
+            <button id="btnVolverQuienSoy" class="botonVolverCursos" type="button">← Menú principal</button>
+        </section>
+    </div>
+
+
+    <!--========================================-->
+    <!-- SELECCIÓN -->
+    <!--========================================-->
+
+    <div class="contenedor" id="pantallaSeleccion" style="display:none;">
+
+        <h2 id="tituloSeleccion">Farmacología</h2>
+
+        <p id="descripcionSeleccion">Elige uno de los 26 temas del sílabo y la cantidad de preguntas que deseas responder.</p>
+
+        <br>
+
+        <div id="grupoSubtema">
+            <label for="sistema">📚 Subtema</label>
+
+            <p class="ayudaSubtema">Toca una opción para ver cuántas preguntas contiene y comenzar a practicar.</p>
+            <div id="listaSubtemas" class="listaSubtemas" role="group" aria-label="Subtemas disponibles"></div>
+            <select id="sistema" class="selectSubtemaOculto" aria-hidden="true" tabindex="-1"></select>
+        </div>
+
+        <div id="grupoCantidadPractica">
+            <label for="cantidad">🔢 Número de preguntas</label>
+
+            <br><br>
+
+            <select id="cantidad">
+                <option value="5">5 preguntas</option>
+                <option value="10">10 preguntas</option>
+                <option value="todas">Todas las preguntas</option>
+            </select>
+        </div>
+
+        <p id="descripcionModalidad" class="descripcionModalidad" aria-live="polite"></p>
+
+        <div id="accionesPractica" class="accionesPractica">
+            <button id="btnIniciar" type="button">▶ Iniciar práctica</button>
+        </div>
+
+        <section class="regresoInicio" aria-label="Navegación">
+            <div>
+                <strong>¿Quieres cambiar de actividad?</strong>
+                <small>Regresa al menú principal para elegir preguntas, material, banqueo o progreso.</small>
+            </div>
+            <button id="btnVolverCursos" class="botonVolverCursos" type="button">← Menú principal</button>
+        </section>
+
+    </div>
+
+
+    <!--========================================-->
+    <!-- EXAMEN -->
+    <!--========================================-->
+
+    <div class="contenedor" id="pantallaPregunta" style="display:none;">
+
+        <div class="barra">
+
+            <div id="barraProgreso"></div>
+
+        </div>
+
+        <h3 id="progreso">
+
+            Pregunta 1 de 10
+
+        </h3>
+
+        <hr>
+
+        <h2 id="textoPregunta">
+
+        </h2>
+
+        <br>
+
+        <div id="opciones">
+
+        </div>
+
+        <br>
+
+        <div id="explicacion" style="display:none;">
+
+            <h3>
+
+                🧠 Fundamento
+
+            </h3>
+
+            <p id="textoExplicacion">
+
+            </p>
+
+        </div>
+
+        <br>
+
+        <button id="btnResponder">
+
+            Responder
+
+        </button>
+
+        <section class="regresoInicio regresoDuranteExamen" aria-label="Salir del examen">
+            <div>
+                <strong>¿Necesitas salir del examen?</strong>
+                <small>Podrás volver al menú principal, pero esta práctica no se guardará.</small>
+            </div>
+            <button id="btnSalirExamen" class="botonVolverCursos" type="button">← Menú principal</button>
+        </section>
+
+    </div>
+
+
+    <!--========================================-->
+    <!-- RESULTADOS -->
+    <!--========================================-->
+
+    <div class="contenedor" id="pantallaResultados" style="display:none;">
+
+        <h1>
+
+            🎉 Examen finalizado
+
+        </h1>
+
+        <br>
+
+        <div class="tarjetaResultado">
+
+            <h2 id="resultadoPuntaje">
+
+                18 / 20
+
+            </h2>
+
+            <h3 id="resultadoPorcentaje">
+
+                90 %
+
+            </h3>
+
+            <p id="resultadoCorrectas">
+
+                ✅ Correctas: 18
+
+            </p>
+
+            <p id="resultadoIncorrectas">
+
+                ❌ Incorrectas: 2
+
+            </p>
+
+            <h3 id="mensajeResultado">
+
+                🎯 Muy buen desempeño
+
+            </h3>
+
+        </div>
+
+        <br>
+
+        <button id="btnRevisar">
+
+            📖 Revisar preguntas equivocadas
+
+        </button>
+
+        <button id="btnReintentar">
+
+            🔄 Reintentar preguntas equivocadas
+
+        </button>
+
+        <button id="btnNuevoExamen">
+
+            🎲 Nuevo examen
+
+        </button>
+
+        <section class="regresoInicio" aria-label="Navegación">
+            <div>
+                <strong>¿Deseas cambiar de actividad?</strong>
+                <small>Vuelve al menú principal para continuar estudiando.</small>
+            </div>
+            <button id="btnVolverInicio" class="botonVolverCursos" type="button">🏠 Menú principal</button>
+        </section>
+
+    </div>
+
+    <div class="contenedor" id="pantallaEstadisticas" style="display:none;">
+
+        <h2>📈 Tus estadísticas</h2>
+        <p>Tu progreso se guarda únicamente en este navegador.</p>
+
+        <div id="contenidoEstadisticas"></div>
+
+        <button id="btnBorrarEstadisticas" class="botonSecundario">🗑️ Borrar historial</button>
+
+        <section class="regresoInicio" aria-label="Navegación">
+            <div>
+                <strong>¿Quieres practicar nuevamente?</strong>
+                <small>Regresa al menú principal para elegir tu siguiente actividad.</small>
+            </div>
+            <button id="btnVolverEstadisticas" class="botonVolverCursos" type="button">🏠 Menú principal</button>
+        </section>
+
+    </div>
+
+
+    <aside class="mascotaSaludo" id="mascotaSaludo" aria-live="polite">
+        <div class="burbujaMascota" id="mensajeMascota">¡Hola! Soy Guilbert. ¿Cómo te llamas?</div>
+        <button class="botonMascota" id="btnMascota" type="button" aria-label="Hablar con Guilbert, la mascota de la plataforma">
+            <img src="mascota-perrito.png?v=20260802-guilbert" alt="Guilbert, schnauzer mascota de la plataforma saludando">
+        </button>
+    </aside>
+
+    <div class="modalNombre" id="modalNombre" role="dialog" aria-modal="true" aria-labelledby="tituloModalNombre" style="display:none;">
+        <div class="tarjetaNombre">
+            <img src="mascota-perrito.png?v=20260802-guilbert" alt="Guilbert, schnauzer mascota de la plataforma saludando">
+            <div>
+                <span class="etiquetaMascota">MASCOTA DE LA PLATAFORMA</span>
+                <h2 id="tituloModalNombre">¡Hola! Soy Guilbert</h2>
+                <p>Antes de empezar, ¿cómo te llamas?</p>
+                <label class="srOnly" for="inputNombre">Tu nombre</label>
+                <input id="inputNombre" type="text" maxlength="30" autocomplete="given-name" placeholder="Escribe tu nombre">
+                <div class="accionesNombre">
+                    <button id="btnGuardarNombre" type="button">Continuar</button>
+                    <button id="btnOmitirNombre" class="botonTexto" type="button">Ahora no</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--========================================-->
+    <!-- PIE -->
+    <!--========================================-->
+
+    <footer>
+
+        FARMACOLOGIA · Versión beta · Piloto 2026-II
+
+        <br>
+
+        © 2026
+
+        <br>
+
+        <br><br>
+
+        <small>Uso educativo. No sustituye guías clínicas actualizadas ni el juicio profesional.</small>
+
+        <p class="notaInstitucional">
+            Esta aplicación fue creada por Md. Julián D. Espinoza P. para los estudiantes de Farmacología de la Universidad Científica del Sur durante el periodo académico 2026-II. Aplicación sin fines de lucro y de uso educativo. El docente declara no tener conflictos de interés.
+        </p>
+
+        <br>
+
+        <button id="btnAbrirAvisoLegal" class="enlaceLegal" type="button">Privacidad y uso educativo</button>
+
+    </footer>
+
+    <!-- AVISO DE PRIVACIDAD Y USO EDUCATIVO -->
+    <div id="modalAvisoLegal" class="modalAvisoLegal" role="dialog" aria-modal="true" aria-labelledby="tituloAvisoLegal" hidden>
+        <section class="tarjetaAvisoLegal">
+            <button id="btnCerrarAvisoLegal" class="cerrarAvisoLegal" type="button" aria-label="Cerrar aviso">×</button>
+
+            <span class="etiquetaAvisoLegal">INFORMACIÓN IMPORTANTE</span>
+            <h2 id="tituloAvisoLegal">Antes de empezar</h2>
+
+            <div class="bloqueAvisoLegal">
+                <h3>🔒 Privacidad</h3>
+                <p>La plataforma no crea cuentas ni envía tu nombre, progreso o estadísticas a un servidor. Estos datos se guardan únicamente en el almacenamiento local de este navegador.</p>
+                <p>Si borras los datos de navegación, cambias de navegador o usas otro dispositivo, tu progreso no se conservará.</p>
+            </div>
+
+            <div class="bloqueAvisoLegal">
+                <h3>⚕️ Uso educativo</h3>
+                <p>El contenido de la plataforma está destinado a la práctica y al aprendizaje de farmacología. No sustituye una consulta profesional, el diagnóstico, el tratamiento ni las guías clínicas actualizadas.</p>
+            </div>
+
+            <button id="btnAceptarAvisoLegal" class="botonAceptarAvisoLegal" type="button">Entendido, continuar</button>
+        </section>
+    </div>
+
+
+    <!--========================================-->
+    <!-- JAVASCRIPT -->
+    <!--========================================-->
+
+    <script src="preguntas.js?v=20260814-preguntas-farmacocinetica"></script>
+
+    <script src="app.js?v=20260815-curvas-farmacodinamia"></script>
+
+</body>
+
+</html>

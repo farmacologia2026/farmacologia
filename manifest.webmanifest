@@ -1,0 +1,21 @@
+{
+  "name": "FARMACOLOGIA",
+  "short_name": "FARMACOLOGIA",
+  "description": "Versión beta y piloto de la plataforma educativa de Farmacología 2026-II.",
+  "lang": "es-PE",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#eef4fb",
+  "theme_color": "#0d6efd",
+  "categories": ["education", "medical"],
+  "icons": [
+    {
+      "src": "plataforma-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
